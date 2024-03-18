@@ -39,7 +39,7 @@ st.set_page_config(page_title="ParvazChatBot2", page_icon='🦅')  # page title
 # Use option_menu with the defined styles
 selected = option_menu(
     menu_title=None,
-    options=["HOME","Prompt Chat", "IMAGE CHAT" ,"PDF CHAT","CHAT HISTORY","CREDITS"],
+    options=["HOME","Prompt Chat", "IMAGE CHAT" ,"PDF CHAT","CHAT HISTORY"],
     icons=['house',"pen" ,'image','book','chat','person'],
     default_index=0,
     menu_icon='user',
