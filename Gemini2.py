@@ -31,7 +31,7 @@ chat = model.start_chat(history=[])
 
 from streamlit_option_menu import option_menu
  ##initialize our streamlit app
-st.set_page_config(page_title="MyBot", page_icon='🦅')  # page title
+st.set_page_config(page_title="MyAI", page_icon='🤖')  # page title
 #with st.sidebar:
 
 
@@ -78,11 +78,11 @@ if selected == "HOME":
     
     st.markdown("""
     ### <span style='color:#0F0F0F'>Usage:</span>
-    <span style='color:#222831'>  🟢 Navigate to TEXT CHAT for the Text based results..</span>
+    <span style='color:#222831'>  📖 Navigate to Prompt CHAT for the Text based results..</span>
     <br>
-    <span style='color:#222831'>  🔵 Navigate to IMAGE CHAT for the IMAGE based results..</span>
+    <span style='color:#222831'>  📸 Navigate to IMAGE CHAT for the IMAGE based results..</span>
     <br>
-    <span style='color:#222831'>  🔴 Navigate to PDF CHAT to chat with the PDF'S..</span>
+    <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
     <br>
 """, unsafe_allow_html=True)
     
