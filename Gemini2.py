@@ -19,14 +19,9 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 # Load environment variables from .env file if present
 load_dotenv()
 
-# Check if 'API_KEY' is in environment variables
-api_key = os.getenv('API_KEY')
+API_KEY = os.environ.get("GOOGLE_API_KEY")
+genai.configure(api_key=API_KEY)
 
-# Check if 'API_KEY' is available either from environment or secrets
-if api_key:
-    genai.configure(api_key=api_key)
-else:
-    st.error("API_KEY is not available. Please make sure to set it in the environment variables or secrets.")
 
 
 
