@@ -34,10 +34,7 @@ from streamlit_option_menu import option_menu
 st.set_page_config(page_title="ParvazChatBot2", page_icon='🦅')  # page title
 #with st.sidebar:
 
-#code for lottie file animation
-def load_lottiefiles(filepath: str):
-    with open(filepath, 'r') as f:
-        return json.load(f)
+
 
 # Use option_menu with the defined styles
 selected = option_menu(
@@ -95,12 +92,10 @@ if selected == "Prompt Chat":
        # response = model.generate_content(input_text)
         return response
 
-    lottie_hi = load_lottiefiles(r'higpt.json')
-    st_lottie(
-        lottie_hi, loop=True, quality="high", speed=1.65, key=None, height=450)
 
 
-    input_text = st.chat_input("Ask the GPT")
+
+    input_text = st.chat_input("Ask your Question")
     
     if  1 and input_text:
         response = get_gemini_response(input_text)
@@ -135,9 +130,7 @@ if selected == "Prompt Chat":
 if selected == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
     
-    # Display chat history with animation
-    lottie_chat = load_lottiefiles(r'askchat.json')
-    st_lottie(lottie_chat, loop=True, quality="high", speed=1.35, key=None, height=450)
+   
     
     # Create two columns for buttons
     text_history_button, image_history_button, pdf_history_button = st.columns([1, 1, 1])
@@ -202,9 +195,7 @@ if selected == "IMAGE CHAT":
         response = vision_model.generate_content([input_text_1, image], stream=True)
         return response
     
-    lottie_img=load_lottiefiles(r"imagechat.json")
-    st_lottie(
-        lottie_img, loop=True, quality="high", speed=1.35, key=None, height=450)
+    
 
     # Option to choose between file upload and URL input
 
@@ -243,7 +234,7 @@ if selected == "IMAGE CHAT":
     # Use the vision model
     if 'image' in locals():
         try:
-            input_text_1 = st.chat_input("Ask the GPT about the image")
+            input_text_1 = st.chat_input("Ask about the image")
             if input_text_1:
                 response = vscontent(input_text_1, image)
                 response.resolve()
