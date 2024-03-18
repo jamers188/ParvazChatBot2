@@ -67,7 +67,7 @@ if  'pdf_srchistory' not in  st.session_state:
 
 
 if selected == "HOME":
-    st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  /n* MyAI 🦅*</span>""", unsafe_allow_html=True)
+    st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  \n* MyAI 🦅*</span>""", unsafe_allow_html=True)
 
     st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
     
@@ -250,9 +250,7 @@ if selected == "IMAGE CHAT":
 
 
 if selected == "PDF CHAT":
-    lottie_cpdf = load_lottiefiles(r"pdfparser.json")
-    st_lottie(lottie_cpdf, loop=True,quality="high", speed=1.25, key=None, height=350)
-
+   
     def get_pdf_text(pdf_docs):
      text=""
      for pdf in pdf_docs:
