@@ -67,22 +67,24 @@ if  'pdf_srchistory' not in  st.session_state:
 
 
 if selected == "HOME":
-    st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  \n* MyAI 🦅*</span>""", unsafe_allow_html=True)
+    st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅**</span>""", unsafe_allow_html=True)
 
     st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
     
     st.markdown("""## <span style='color:##11009E'>Introduction</span>""", unsafe_allow_html=True)
 
-    st.markdown(""" <span style='color:#020C0C'>This is the new ParvazChatBot2.. </span>""", unsafe_allow_html=True)
+    st.markdown(""" <span style='color:#020C0C'> MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases. </span>""", unsafe_allow_html=True)
     
     
     st.markdown("""
-    ### <span style='color:#0F0F0F'>Usage:</span>
+    ### <span style='color:#0F0F0F'>Instructions:</span>
     <span style='color:#222831'>  📖 Navigate to Prompt CHAT for the Text based results..</span>
     <br>
     <span style='color:#222831'>  📸 Navigate to IMAGE CHAT for the IMAGE based results..</span>
     <br>
     <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
+     <span style='color:#222831'> Explore the Possibilities: ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs. 
+     </span>
     <br>
 """, unsafe_allow_html=True)
     
