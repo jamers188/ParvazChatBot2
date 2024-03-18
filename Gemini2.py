@@ -34,7 +34,29 @@ from streamlit_option_menu import option_menu
 st.set_page_config(page_title="MyAI", page_icon='🤖')  # page title
 #with st.sidebar:
 
+# Initialize session state if it doesn't exist
+if 'selected_option' not in st.session_state:
+    st.session_state['selected_option'] = "HOME"
 
+# Define the options for the sidebar menu
+options = ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"]
+
+# Function to render the sidebar menu with dynamic styling
+def render_menu(option):
+    # Iterate over options and apply styling based on selection
+    for opt in options:
+        if opt == option:
+            st.markdown(f"<div style='background-color: #ff69b4; padding: 8px; border-radius: 5px;'>{opt}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div style='padding: 8px; border-radius: 5px;'>{opt}</div>", unsafe_allow_html=True)
+
+# Render the sidebar menu
+render_menu(st.session_state['selected_option'])
+
+# Store the selected option in session state when clicked
+for opt in options:
+    if st.markdown(f"<a href='#' onclick=\"element=document.getElementById('selected_option').innerText='{opt}';\">{opt}</a>", unsafe_allow_html=True):
+        st.session_state['selected_option'] = opt
 
 # Use option_menu with the defined styles
 selected = option_menu(
