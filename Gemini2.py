@@ -84,7 +84,10 @@ if selected == "HOME":
     <br>
     <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
     <br>
-     <span style='color:#222831'> Explore the Possibilities: ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs. 
+     <span style='color:#222831'> Explore the Possibilities:</span>
+     <br>
+     
+     <span style='color:#222831'> ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs. 
      </span>
     <br>
 """, unsafe_allow_html=True)
