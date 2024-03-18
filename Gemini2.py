@@ -84,6 +84,7 @@ if selected == "HOME":
     <br>
     <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
     <br>
+    <br>
      <span style='color:#222831'> Explore the Possibilities:</span>
      <br>
      
