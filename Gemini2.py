@@ -29,14 +29,7 @@ genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("gemini-pro")
 chat = model.start_chat(history=[])
 
-from streamlit_option_menu import option_menu
- ##initialize our streamlit app
-st.set_page_config(page_title="MyAI", page_icon='🤖')  # page title
-#with st.sidebar:
 
-# Initialize session state if it doesn't exist
-if 'selected_option' not in st.session_state:
-    st.session_state['selected_option'] = "HOME"
 
 # Define the options for the sidebar menu
 options = ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"]
