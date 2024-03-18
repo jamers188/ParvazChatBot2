@@ -31,7 +31,7 @@ chat = model.start_chat(history=[])
 
 from streamlit_option_menu import option_menu
  ##initialize our streamlit app
-st.set_page_config(page_title="ParvazChatBot2", page_icon='🦅')  # page title
+st.set_page_config(page_title="MyBot", page_icon='🦅')  # page title
 #with st.sidebar:
 
 
