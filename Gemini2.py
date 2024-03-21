@@ -14,8 +14,6 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from PIL import Image
-
 
 
 # Load environment variables from .env file if present
@@ -211,9 +209,8 @@ if selected == "IMAGE CHAT":
     option = st.radio("Choose an option", ["Upload Image", "Provide Image URL"])
 
     if option == "Upload Image":
-        st.write("Upload an image:")
         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-        if uploaded_file is not None:
+        if uploaded_file:
             try:
                 image = Image.open(uploaded_file)
                 st.image(image, caption='Uploaded Image', use_column_width=True)
