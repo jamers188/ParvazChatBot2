@@ -209,6 +209,7 @@ if selected == "IMAGE CHAT":
     option = st.radio("Choose an option", ["Upload Image", "Provide Image URL"])
 
     if option == "Upload Image":
+        st.write("Upload an image:")
         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
         if uploaded_file is not None:
             try:
