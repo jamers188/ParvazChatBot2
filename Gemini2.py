@@ -172,6 +172,7 @@ if selected == "HOME":
     if input_text:
         response = get_gemini_response(input_text)
 
+    
 
 elif selected == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
