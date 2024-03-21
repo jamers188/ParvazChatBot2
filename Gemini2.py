@@ -65,7 +65,7 @@ if  'pdf_history' not in  st.session_state:
 if  'pdf_srchistory' not in  st.session_state:
         st.session_state['pdf_srchistory'] = []
 
-
+ # Displaying the home page content
 if selected == "HOME":
     st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅</span>""", unsafe_allow_html=True)
 
@@ -92,7 +92,7 @@ if selected == "HOME":
      </span>
     <br>
 """, unsafe_allow_html=True)
-    
+ # Function to get responses from the Gemini chatbot
 if selected == "Prompt Chat":
     def get_gemini_response(question):
         response = chat.send_message(question, stream=True)
@@ -133,7 +133,7 @@ if selected == "Prompt Chat":
                     st.warning("Invalid response format. Unable to extract text from parts.")
         else:
             st.warning("Invalid response format. No parts found.")
-
+ # Displaying the chat history
 if selected == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
     
@@ -156,7 +156,7 @@ if selected == 'CHAT HISTORY':
                         st.markdown(f"**{role} 🤖**: {text} ")
             else:
                 st.error("Text Chat History is empty. Start asking questions to build the history.")
-
+  # Display image chat history if the button is clicked
     with image_history_button:
         if st.button("Show Image Chat History", use_container_width=True):
             for history_type, header_text, emoji in [
@@ -257,7 +257,7 @@ if selected == "IMAGE CHAT":
 
 
 if selected == "PDF CHAT":
-   
+   # Function to extract text from PDF documents
     def get_pdf_text(pdf_docs):
      text=""
      for pdf in pdf_docs:
@@ -269,19 +269,21 @@ if selected == "PDF CHAT":
 
 
     def get_text_chunks(text):
+     # Function to split text into smaller chunks
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
         chunks = text_splitter.split_text(text)
         return chunks
 
 
     def get_vector_store(text_chunks):
+        # Function to create a vector store from text chunks
         embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
         vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
         vector_store.save_local("faiss_index")
 
 
     def get_conversational_chain():
-
+  # Function to load and configure the conversational chain
         prompt_template = """
         Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
         provided context just say, "answer is not available in the context", don't provide the wrong answer\n\n
@@ -299,7 +301,7 @@ if selected == "PDF CHAT":
         return chain
 
     def main1():
-        
+      # Main function for PDF chat functionality
         st.header("Chat with PDF ")
 
         user_question = st.chat_input("Ask a Question from the PDF Files")
@@ -324,6 +326,7 @@ if selected == "PDF CHAT":
                         
 
     def user_input(user_question):
+       # Function to process user input and generate a response
         embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
         
         new_db = FAISS.load_local("faiss_index", embeddings)
@@ -340,5 +343,7 @@ if selected == "PDF CHAT":
         output_Text = response1["output_text"]
         st.session_state["pdf_history"].append(("YOU", user_question))
         st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
+     #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
+ #
     if __name__ == "__main__":
         main1()
