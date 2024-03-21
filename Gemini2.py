@@ -278,7 +278,9 @@ if selected == "PDF CHAT":
     def get_vector_store(text_chunks):
         # Function to create a vector store from text chunks
         embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+        vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
         vector_store = faiss.read_index(str(path), allow_dangerous_deserialization=True)
+
         vector_store.save_local("faiss_index")
 
 
@@ -326,20 +328,23 @@ if selected == "PDF CHAT":
                         
 
     def user_input(user_question):
-    # Function to process user input and generate a response
-     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-     new_db = FAISS.load_local("faiss_index", embeddings)
-     docs = new_db.similarity_search(user_question)
-     chain = get_conversational_chain()
-     response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-     if "output_text" in response1:
-      output_Text = response1["output_text"]
-      st.write("Reply: ", output_Text)
-      st.session_state["pdf_history"].append(("YOU", user_question))
-      st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
-     else:
-      st.warning("Invalid response format. No output text found.")
+       # Function to process user input and generate a response
+        embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+        
+        new_db = FAISS.load_local("faiss_index", embeddings)
+        docs = new_db.similarity_search(user_question)
 
+        chain = get_conversational_chain()
+
+        
+        response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
+        
+        print(response1)
+        st.write("Reply: ", response1["output_text"])
+        
+        output_Text = response1["output_text"]
+        st.session_state["pdf_history"].append(("YOU", user_question))
+        st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
  #
     if __name__ == "__main__":
