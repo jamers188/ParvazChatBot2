@@ -206,7 +206,7 @@ if selected == "IMAGE CHAT":
 
     # Option to choose between file upload and URL input
 
-    option = st.radio("Choose an option", ["Upload Image", "Provide Image URL"])
+    option = st.radio("Choose an option", ["Upload Image", "Provide Image URL ( Image Address )"])
 
     if option == "Upload Image":
         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
