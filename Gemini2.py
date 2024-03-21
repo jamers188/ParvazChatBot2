@@ -136,11 +136,11 @@ if selected == "HOME":
     </span>
     <br>
 """, unsafe_allow_html=True)
-    if selected == "Prompt Chat":
-        def get_gemini_response(question):
-            response = chat.send_message(question, stream=True)
-            st.session_state['chat_history'].append(("YOU", question))
-            st.success("The Response is")
+    elif selected == "Prompt Chat":
+    def get_gemini_response(question):
+        response = chat.send_message(question, stream=True)
+        st.session_state['chat_history'].append(("YOU", question))
+        st.success("The Response is")
 
         # Resolve the response to complete iteration
         response.resolve()
@@ -166,6 +166,12 @@ if selected == "HOME":
                     st.warning("Invalid response format. Unable to extract text from parts.")
         else:
             st.warning("Invalid response format. No parts found.")
+
+    input_text = st.text_input("Ask your Question")
+    
+    if input_text:
+        response = get_gemini_response(input_text)
+
 
 elif selected == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
