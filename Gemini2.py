@@ -207,16 +207,16 @@ if selected == "IMAGE CHAT":
     # Option to choose between file upload and URL input
 
     option = st.radio("Choose an option", ["Upload Image", "Provide Image URL"])
-
-    if option == "Upload Image":
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], accept_multiple_files=False)
-    if uploaded_file is not None:
-        try:
-            image = Image.open(uploaded_file)
-            st.image(image, caption='Uploaded Image', use_column_width=True)
-            st.session_state['img_srchistory'].append(("SOURCE", option))
-        except Exception as e:
-            st.error(f"Error loading uploaded image: {str(e)}")
+ 
+if option == "Upload Image":
+ uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], accept_multiple_files=False)
+ if uploaded_file is not None:
+  try:
+   image = Image.open(uploaded_file)
+   st.image(image, caption='Uploaded Image', use_column_width=True)
+   st.session_state['img_srchistory'].append(("SOURCE", option))
+  except Exception as e:
+   st.error(f"Error loading uploaded image: {str(e)}")
 
 
 
