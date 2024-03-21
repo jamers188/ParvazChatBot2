@@ -137,10 +137,10 @@ if selected == "HOME":
     <br>
 """, unsafe_allow_html=True)
     elif selected == "Prompt Chat":
-    def get_gemini_response(question):
-        response = chat.send_message(question, stream=True)
-        st.session_state['chat_history'].append(("YOU", question))
-        st.success("The Response is")
+        def get_gemini_response(question):
+            response = chat.send_message(question, stream=True)
+            st.session_state['chat_history'].append(("YOU", question))
+            st.success("The Response is")
 
         # Resolve the response to complete iteration
         response.resolve()
