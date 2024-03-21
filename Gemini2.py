@@ -322,17 +322,22 @@ if selected == "PDF CHAT":
                         pdf_names = [pdf.name for pdf in pdf_docs]
                         st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
                         st.balloons()
-                        
-                        
+                     
+         
+     
 
-    def user_input(user_question):
+
+def user_input(user_question):
     # Function to process user input and generate a response
-     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-     try:
-      new_db = FAISS.load_local("faiss_index", embeddings)
-      docs = new_db.similarity_search(user_question)
-      chain = get_conversational_chain()
-      response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+
+    try:
+        new_db = FAISS.load_local("faiss_index", embeddings)
+        docs = new_db.similarity_search(user_question)
+
+        chain = get_conversational_chain()
+
+        response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
 
         print(response1)
         st.write("Reply: ", response1["output_text"])
@@ -343,5 +348,7 @@ if selected == "PDF CHAT":
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
 
+     #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
+ #
     if __name__ == "__main__":
         main1()
