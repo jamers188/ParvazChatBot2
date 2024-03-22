@@ -98,13 +98,13 @@ if selected == "Prompt Chat":
     def get_gemini_response(question):
         try:
             response = chat.send_message(question, stream=True)
-            # response = model.generate_content(input_text)
+            response = model.generate_content(input_text)
             return response
         except generation_types.BlockedPromptException as e:
             st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
             return None  # Return None to indicate failure
         response = chat.send_message(question, stream=True)
-       # response = model.generate_content(input_text)
+        response = model.generate_content(input_text)
         return response
 
 
