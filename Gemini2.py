@@ -233,8 +233,8 @@ if selected == "IMAGE CHAT":
                         st.session_state['img_srchistory'].append(("SOURCE", option))
                      else:
                          st.error(f"Failed to retrieve image from URL. Status code: {response.status_code}")
-                except Exception as e:
-                    st.error(f"Error loading image from URL: {str(e)}")
+                 except Exception as e:
+                     st.error(f"Error loading image from URL: {str(e)}")
 
 
 
