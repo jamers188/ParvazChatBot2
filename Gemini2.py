@@ -268,24 +268,31 @@ if selected == "IMAGE CHAT":
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
+class FileSizeExceededException(Exception):
+    pass
 
+def get_pdf_text(pdf_docs):
+    text = ""
+    for pdf in pdf_docs:
+        try:
+            # Check file size before reading
+            if pdf.size > 200 * 1024 * 1024:  # 200 MB in bytes
+                raise FileSizeExceededException(f"File size exceeds 200 MB: {pdf.name}")
+            
+            pdf_reader = PdfReader(pdf)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        except FileSizeExceededException as e:
+            st.warning(str(e))
+            continue
+        except Exception as e:
+            if type(e).__name__ == "PdfReadError":
+                st.warning(f"Skipping non-PDF file: {pdf.name}. Error: {str(e)}")
+                continue
+            else:
+                raise  # Raise the exception if it's not a PdfReadError
+    return text
 
-if selected == "PDF CHAT":
-   # Function to extract text from PDF documents
-    def get_pdf_text(pdf_docs):
-        text = ""
-        for pdf in pdf_docs:
-            try:
-                pdf_reader = PdfReader(pdf)
-                for page in pdf_reader.pages:
-                    text += page.extract_text()
-            except Exception as e:
-                if type(e).__name__ == "PdfReadError":
-                    st.warning(f"Skipping non-PDF file: {pdf.name}. Error: {str(e)}")
-                    continue
-                else:
-                    raise  # Raise the exception if it's not a PdfReadError
-        return text
 
 
     def get_text_chunks(text):
@@ -301,7 +308,7 @@ if selected == "PDF CHAT":
             vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
             vector_store.save_local("faiss_index")
         except Exception as e:
-            st.error("Enjoy")
+            st.error(f"An error occurred while creating the vector store: {str(e)}")
 
 
 
