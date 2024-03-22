@@ -221,9 +221,9 @@ if selected == "IMAGE CHAT":
 
     elif option == "Provide Image URL":
          st.write("Enter Image URL:")
-         image_url = st.text_area("Paste Image URL Here:", height=50)
+         image_url = st.text_input("Paste Image URL Here:")
          submit_button = st.button("Submit URL")
-         if submit_button and image_url:
+         if st.button("Submit URL") and image_url:
              try:
                  response = requests.get(image_url)
                  if response.status_code == 200:
