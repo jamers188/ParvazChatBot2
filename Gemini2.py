@@ -268,8 +268,6 @@ if selected == "IMAGE CHAT":
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
-class FileSizeExceededException(Exception):
-    pass
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -277,14 +275,12 @@ def get_pdf_text(pdf_docs):
         try:
             # Check file size before reading
             if pdf.size > 200 * 1024 * 1024:  # 200 MB in bytes
-                raise FileSizeExceededException(f"File size exceeds 200 MB: {pdf.name}")
+                st.warning(f"Skipping file: {pdf.name}. File size exceeds 200 MB.")
+                continue
             
             pdf_reader = PdfReader(pdf)
             for page in pdf_reader.pages:
                 text += page.extract_text()
-        except FileSizeExceededException as e:
-            st.warning(str(e))
-            continue
         except Exception as e:
             if type(e).__name__ == "PdfReadError":
                 st.warning(f"Skipping non-PDF file: {pdf.name}. Error: {str(e)}")
@@ -292,6 +288,7 @@ def get_pdf_text(pdf_docs):
             else:
                 raise  # Raise the exception if it's not a PdfReadError
     return text
+
 
 
 
