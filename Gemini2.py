@@ -301,7 +301,7 @@ if selected == "PDF CHAT":
             vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
             vector_store.save_local("faiss_index")
         except Exception as e:
-            st.error(f"An error occurred while creating the vector store: {str(e)}")
+            st.error(f"An error occurred while creating the vector store: ( ignore ) {str(e)}")
 
 
 
