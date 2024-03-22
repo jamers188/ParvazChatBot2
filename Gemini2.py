@@ -98,49 +98,41 @@ if selected == "Prompt Chat":
     def get_gemini_response(question):
         try:
             response = chat.send_message(question, stream=True)
-            response = model.generate_content(input_text)
             return response
         except generation_types.BlockedPromptException as e:
             st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
-            return None  # Return None to indicate failure
-        response = chat.send_message(question, stream=True)
-        response = model.generate_content(input_text)
-        return response
-
-
-
 
     input_text = st.chat_input("Ask your Question")
     
-    if  1 and input_text:
+    if input_text:
         response = get_gemini_response(input_text)
-        if response is not None:
-            st.session_state['chat_history'].append(("YOU", input_text))
-            st.success("The Response is")
+        
+        st.session_state['chat_history'].append(("YOU", input_text))
+        st.success("The Response is")
 
-            # Resolve the response to complete iteration
-            response.resolve()
-            # Handle the Gemini response format
-            if hasattr(response, 'parts') and response.parts:
-                for part in response.parts:
-                    # Extract text from each part
-                    if hasattr(part, 'text') and part.text:
-                        text_line = part.text
-                        st.write(text_line)
-                        st.session_state['chat_history'].append(("TEXT_BOT", text_line))
-                    elif hasattr(part, 'candidates') and part.candidates:
-                        # Handle candidates in the response
-                        for candidate in part.candidates:
-                            if hasattr(candidate, 'content') and candidate.content:
-                                text_line = candidate.content.text
-                                st.write(text_line)
-                                st.session_state['chat_history'].append(("TEXT_BOT", text_line))
-                            else:
-                                st.warning("Invalid response format. Unable to extract text from candidates.")
-                    else:
-                        st.warning("Invalid response format. Unable to extract text from parts.")
-            else:
-                st.warning("Invalid response format. No parts found.")
+        # Resolve the response to complete iteration
+        response.resolve()
+        # Handle the Gemini response format
+        if hasattr(response, 'parts') and response.parts:
+            for part in response.parts:
+                # Extract text from each part
+                if hasattr(part, 'text') and part.text:
+                    text_line = part.text
+                    st.write(text_line)
+                    st.session_state['chat_history'].append(("TEXT_BOT", text_line))
+                elif hasattr(part, 'candidates') and part.candidates:
+                    # Handle candidates in the response
+                    for candidate in part.candidates:
+                        if hasattr(candidate, 'content') and candidate.content:
+                            text_line = candidate.content.text
+                            st.write(text_line)
+                            st.session_state['chat_history'].append(("TEXT_BOT", text_line))
+                        else:
+                            st.warning("Invalid response format. Unable to extract text from candidates.")
+                else:
+                    st.warning("Invalid response format. Unable to extract text from parts.")
+        else:
+            st.warning("Invalid response format. No parts found.")
  # Displaying the chat history
 if selected == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
