@@ -94,6 +94,8 @@ if selected == "HOME":
     <br>
 """, unsafe_allow_html=True)
  # Function to get responses from the Gemini chatbot
+
+
 if selected == "Prompt Chat":
     def get_gemini_response(question):
         try:
@@ -102,7 +104,7 @@ if selected == "Prompt Chat":
         except generation_types.BlockedPromptException as e:
             st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
 
-    input_text = st.chat_input("Ask your Question")
+    input_text = st.text_input("Ask your Question")
     
     if input_text:
         response = get_gemini_response(input_text)
@@ -133,6 +135,7 @@ if selected == "Prompt Chat":
                     st.warning("Invalid response format. Unable to extract text from parts.")
         else:
             st.warning("Invalid response format. No parts found.")
+
  # Displaying the chat history
 if selected == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
