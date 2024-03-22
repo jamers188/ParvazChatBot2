@@ -273,15 +273,15 @@ if selected == "IMAGE CHAT":
 if selected == "PDF CHAT":
    # Function to extract text from PDF documents
     def get_pdf_text(pdf_docs):
-    text = ""
-    for pdf in pdf_docs:
-        try:
-            pdf_reader = PdfReader(pdf)
-            for page in pdf_reader.pages:
-                text += page.extract_text()
-        except PdfReadError as e:
-            st.error(f"PdfReadError: {str(e)}")
-    return text
+        text = ""
+        for pdf in pdf_docs:
+            try:
+                pdf_reader = PdfReader(pdf)
+                for page in pdf_reader.pages:
+                    text += page.extract_text()
+            except PdfReadError as e:
+                st.error(f"PdfReadError: {str(e)}")
+        return text
 
 
 
@@ -336,13 +336,13 @@ if selected == "PDF CHAT":
                 if not pdf_docs:
                     st.error("Please upload PDF files only.")
                     return
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done")
-                pdf_names = [pdf.name for pdf in pdf_docs]
-                st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-                st.balloons()
+        raw_text = get_pdf_text(pdf_docs)
+        text_chunks = get_text_chunks(raw_text)
+        get_vector_store(text_chunks)
+        st.success("Done")
+        pdf_names = [pdf.name for pdf in pdf_docs]
+        st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+        st.balloons()
 
                         
               
