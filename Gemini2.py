@@ -220,21 +220,19 @@ if selected == "IMAGE CHAT":
 
 
     elif option == "Provide Image URL":
-         st.write("Enter Image URL:")
-         with st.form(key='image_url_form'):
-              image_url = st.text_input("Paste Image URL Here(Paste Image address):")
-              submitted = st.form_submit_button("Submit URL")
-              if submitted and image_url:
-                 try:
-                     response = requests.get(image_url)
-                     if response.status_code == 200:
-                        image = Image.open(BytesIO(response.content))
-                        st.image(image, caption='Image from URL', use_column_width=True)
-                        st.session_state['img_srchistory'].append(("SOURCE", option))
-                     else:
-                         st.error(f"Failed to retrieve image from URL. Status code: {response.status_code}")
-                 except Exception as e:
-                     st.error(f"Error loading image from URL: {str(e)}")
+         image_url = st.text_input("Paste Image URL Here(Paste Image address):")
+         if image_url:
+             try:
+                 response = requests.get(image_url)
+                 if response.status_code == 200:
+                     image = Image.open(BytesIO(response.content))
+                     st.image(image, caption='Image from URL', use_column_width=True)
+                     st.session_state['img_srchistory'].append(("SOURCE", option))
+                 else:
+                     st.error(f"Failed to retrieve image from URL. Status code: {response.status_code}")
+             except Exception as e:
+                 st.error(f"Error loading image from URL: {str(e)}")
+
 
 
 
