@@ -298,6 +298,7 @@ if selected == "PDF CHAT":
     def get_vector_store(text_chunks):
         # Function to create a vector store from text chunks
         embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+        index = faiss.IndexFlatL2(len(embeddings[0]))
         vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
         vector_store.save_local("faiss_index")
 
