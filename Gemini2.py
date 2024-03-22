@@ -221,8 +221,9 @@ if selected == "IMAGE CHAT":
 
     elif option == "Provide Image URL":
          st.write("Enter Image URL:")
-         image_url = st.text_input("Paste Image URL Here:")
-         submit_button = st.button("Submit URL")
+     with st.form(key='image_url_form'):
+      image_url = st.text_input("Paste Image URL Here:")
+      submitted = st.form_submit_button("Submit URL")
          if st.button("Submit URL") and image_url:
              try:
                  response = requests.get(image_url)
