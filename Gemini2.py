@@ -219,7 +219,7 @@ if selected == "IMAGE CHAT":
               st.error(f"Error loading uploaded image: {str(e)}")
 
 
-    elif option == "Provide Image URL":
+    elif option == "Provide Image URL (Copy Image address) ":
          st.write("Enter Image URL:")
          with st.form(key='image_url_form'):
               image_url = st.text_input("Paste Image URL Here:")
