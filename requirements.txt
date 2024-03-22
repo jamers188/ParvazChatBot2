@@ -9,4 +9,4 @@ chromadb
 faiss-cpu
 langchain_google_genai
 requests
-generation-types==0.1.0
+generation_types
