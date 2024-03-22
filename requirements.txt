@@ -10,3 +10,4 @@ faiss-cpu
 langchain_google_genai
 requests
 generation_types
+PdfReadError
