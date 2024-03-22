@@ -272,20 +272,20 @@ if selected == "IMAGE CHAT":
 
 if selected == "PDF CHAT":
    # Function to extract text from PDF documents
-   def get_pdf_text(pdf_docs):
-    text = ""
-    for pdf in pdf_docs:
-        try:
-            pdf_reader = PdfReader(pdf)
-            for page in pdf_reader.pages:
-                text += page.extract_text()
-        except Exception as e:
-            if type(e).__name__ == "PdfReadError":
-                st.warning(f"Skipping non-PDF file: {pdf.name}. Error: {str(e)}")
-                continue
-            else:
-                raise  # Raise the exception if it's not a PdfReadError
-    return text
+    def get_pdf_text(pdf_docs):
+        text = ""
+        for pdf in pdf_docs:
+            try:
+                pdf_reader = PdfReader(pdf)
+                for page in pdf_reader.pages:
+                    text += page.extract_text()
+            except Exception as e:
+                if type(e).__name__ == "PdfReadError":
+                    st.warning(f"Skipping non-PDF file: {pdf.name}. Error: {str(e)}")
+                    continue
+                else:
+                    raise  # Raise the exception if it's not a PdfReadError
+                return text
 
 
     def get_text_chunks(text):
