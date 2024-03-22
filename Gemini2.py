@@ -15,6 +15,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from google.generativeai.types import generation_types
+from PyPDF2.utils import PdfReadError
 
 
 # Load environment variables from .env file if present
@@ -272,12 +273,15 @@ if selected == "IMAGE CHAT":
 if selected == "PDF CHAT":
    # Function to extract text from PDF documents
     def get_pdf_text(pdf_docs):
-     text=""
-     for pdf in pdf_docs:
-        pdf_reader= PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text+= page.extract_text()
-     return  text
+    text = ""
+    for pdf in pdf_docs:
+        try:
+            pdf_reader = PdfReader(pdf)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        except PdfReadError as e:
+            st.error(f"PdfReadError: {str(e)}")
+    return text
 
 
 
@@ -327,14 +331,19 @@ if selected == "PDF CHAT":
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
         
         if st.button("Submit & Process") :
-                    with st.spinner("Processing..."):
-                        raw_text = get_pdf_text(pdf_docs)
-                        text_chunks = get_text_chunks(raw_text)
-                        get_vector_store(text_chunks)
-                        st.success("Done")
-                        pdf_names = [pdf.name for pdf in pdf_docs]
-                        st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-                        st.balloons()
+            with st.spinner("Processing..."):
+                pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
+                if not pdf_docs:
+                    st.error("Please upload PDF files only.")
+                    return
+                raw_text = get_pdf_text(pdf_docs)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks)
+                st.success("Done")
+                pdf_names = [pdf.name for pdf in pdf_docs]
+                st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+                st.balloons()
+
                         
               
           
