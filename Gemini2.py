@@ -96,6 +96,8 @@ if selected == "HOME":
  # Function to get responses from the Gemini chatbot
 
 
+
+
 if selected == "Prompt Chat":
     def get_gemini_response(question):
         try:
@@ -109,32 +111,39 @@ if selected == "Prompt Chat":
     if input_text:
         response = get_gemini_response(input_text)
         
-        st.session_state['chat_history'].append(("YOU", input_text))
-        st.success("The Response is")
+        if response:
+            st.session_state['chat_history'].append(("YOU", input_text))
+            st.success("The Response is")
 
-        # Resolve the response to complete iteration
-        response.resolve()
-        # Handle the Gemini response format
-        if hasattr(response, 'parts') and response.parts:
-            for part in response.parts:
-                # Extract text from each part
-                if hasattr(part, 'text') and part.text:
-                    text_line = part.text
-                    st.write(text_line)
-                    st.session_state['chat_history'].append(("TEXT_BOT", text_line))
-                elif hasattr(part, 'candidates') and part.candidates:
-                    # Handle candidates in the response
-                    for candidate in part.candidates:
-                        if hasattr(candidate, 'content') and candidate.content:
-                            text_line = candidate.content.text
+            # Check if response object has resolve method
+            if hasattr(response, 'resolve') and callable(getattr(response, 'resolve')):
+                response.resolve()
+                # Handle the Gemini response format
+                if hasattr(response, 'parts') and response.parts:
+                    for part in response.parts:
+                        # Extract text from each part
+                        if hasattr(part, 'text') and part.text:
+                            text_line = part.text
                             st.write(text_line)
                             st.session_state['chat_history'].append(("TEXT_BOT", text_line))
+                        elif hasattr(part, 'candidates') and part.candidates:
+                            # Handle candidates in the response
+                            for candidate in part.candidates:
+                                if hasattr(candidate, 'content') and candidate.content:
+                                    text_line = candidate.content.text
+                                    st.write(text_line)
+                                    st.session_state['chat_history'].append(("TEXT_BOT", text_line))
+                                else:
+                                    st.warning("Invalid response format. Unable to extract text from candidates.")
                         else:
-                            st.warning("Invalid response format. Unable to extract text from candidates.")
+                            st.warning("Invalid response format. Unable to extract text from parts.")
                 else:
-                    st.warning("Invalid response format. Unable to extract text from parts.")
+                    st.warning("Invalid response format. No parts found.")
+            else:
+                st.error("Error: Response object does not have a 'resolve' method.")
         else:
-            st.warning("Invalid response format. No parts found.")
+            st.error("Error: Failed to retrieve response from the chat service.")
+
 
  # Displaying the chat history
 if selected == 'CHAT HISTORY':
