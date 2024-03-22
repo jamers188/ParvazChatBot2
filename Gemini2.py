@@ -285,7 +285,7 @@ if selected == "PDF CHAT":
                     continue
                 else:
                     raise  # Raise the exception if it's not a PdfReadError
-                return text
+        return text
 
 
     def get_text_chunks(text):
