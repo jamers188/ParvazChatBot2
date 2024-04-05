@@ -367,7 +367,7 @@ if user_question:
     pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
     if not pdf_docs:
      st.error("Please upload PDF files only.")
-     return
+ return
      raw_text = get_pdf_text(pdf_docs)
      text_chunks = get_text_chunks(raw_text)
      get_vector_store(text_chunks)
