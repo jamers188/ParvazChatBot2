@@ -1,42 +1,92 @@
 import streamlit as st
-from transformers import pipeline
+import os
+from io import BytesIO
+import requests
+from PyPDF2 import PdfReader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from google.generativeai.types import generation_types
 
-# Load the chatbot model
-chatbot = pipeline("text-generation", model="microsoft/DialoGPT-large")
+# Load environment variables from .env file if present
+# load_dotenv()
 
-# Main function for PDF chat functionality
-def main():
-    st.title("Chat with PDF")
-    st.sidebar.title("Options")
-    option = st.sidebar.radio("Choose an Option", ("Upload PDF File", "Provide PDF URL"))
+# Initialize Streamlit app
+st.set_page_config(page_title="MyAI", page_icon='🤖')  # Page title
 
-    with st.form(key="chat_form"):
-        if option == "Upload PDF File":
-            uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+# Initialize Gemini Pro model
+model = ChatGoogleGenerativeAI(model="gemini-pro")
 
-            if uploaded_file:
-                st.success("PDF file uploaded successfully!")
+# Initialize session state for chat history and PDF history
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
+if 'pdf_history' not in st.session_state:
+    st.session_state['pdf_history'] = []
 
-        elif option == "Provide PDF URL":
-            pdf_url = st.text_input("Enter the URL of the PDF")
-            fetch_button_clicked = st.form_submit_button("Fetch PDF from URL")
+# Function to get responses from the Gemini chatbot
+def get_gemini_response(question):
+    try:
+        response = model(question)
+        return response
+    except generation_types.BlockedPromptException as e:
+        st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
 
-            if fetch_button_clicked:
-                if pdf_url:
-                    st.success("PDF loaded successfully!")
+# Function to extract text from PDF documents
+def get_pdf_text(pdf_docs):
+    text = ""
+    for pdf in pdf_docs:
+        try:
+            pdf_reader = PdfReader(pdf)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        except Exception as e:
+            st.warning(f"Error reading PDF: {str(e)}")
+    return text
 
-        user_question = st.text_input("Ask a question")
+# Function to process user input and generate a response
+def process_user_input():
+    user_question = st.text_input("Ask a question")
+    if st.button("Ask") and user_question:
+        response = get_gemini_response(user_question)
+        if response:
+            st.session_state['chat_history'].append(("You", user_question))
+            st.session_state['chat_history'].append(("Bot", response.text))
+            st.success("Response:")
+            st.write(response.text)
 
-        chat_button_clicked = st.form_submit_button("Chat")
+# Function to process PDF upload and generate a response
+def process_pdf_upload(pdf_docs):
+    if st.button("Submit & Process"):
+        with st.spinner("Processing..."):
+            raw_text = get_pdf_text(pdf_docs)
+            st.success("PDF processed successfully.")
+            st.write("Extracted Text:")
+            st.write(raw_text)
+            response = get_gemini_response(raw_text)
+            if response:
+                st.session_state['pdf_history'].append(("PDF Uploaded", "Yes"))
+                st.session_state['pdf_history'].append(("Bot", response.text))
+                st.success("Response:")
+                st.write(response.text)
 
-    if chat_button_clicked:
-        if user_question:
-            # Pass user's question to the chatbot model and get response
-            chat_response = chatbot(user_question, max_length=100)
-            st.write("You:", user_question)
-            st.write("Bot:", chat_response[0]['generated_text'])
-        else:
-            st.warning("Please enter a question.")
+# Display chat interface for text
+st.title("Chat with Gemini Pro")
+process_user_input()
 
-if __name__ == "__main__":
-    main()
+# Display chat history for text
+st.title("Text Chat History")
+for role, text in st.session_state['chat_history']:
+    st.markdown(f"**{role}:** {text}")
+
+# Display chat interface for PDFs
+st.title("Chat with PDF")
+pdf_docs = st.file_uploader("Upload PDF(s)", accept_multiple_files=True)
+if pdf_docs:
+    process_pdf_upload(pdf_docs)
+
+# Display chat history for PDFs
+st.title("PDF Chat History")
+for role, text in st.session_state['pdf_history']:
+    st.markdown(f"**{role}:** {text}")
