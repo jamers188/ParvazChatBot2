@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+from streamlit_lottie import st_lottie
 import google.generativeai as genai
 from dotenv import load_dotenv
 from io import BytesIO
@@ -15,12 +16,11 @@ genai.configure(api_key=API_KEY)
 
 # Function to load Gemini Pro model and start chat
 def load_model():
-    model = genai.GenerativeModel("gemini-pro")
-    chat = model.start_chat(history=[])
-    return chat
+    model = genai.ChatSession("gemini-pro")
+    return model
 
 # Function to process PDF URL input and generate a response
-def process_pdf_url(pdf_url):
+def process_pdf_url(pdf_url, chat):
     try:
         # Download PDF from URL
         response = requests.get(pdf_url)
@@ -59,8 +59,7 @@ def main():
     # Set page configuration
     st.set_page_config(page_title="MyAI", page_icon="🤖")
 
-    # Load model and start chat
-    global chat
+    # Load model
     chat = load_model()
 
     # Define selected option
@@ -75,12 +74,28 @@ def main():
             uploaded_pdfs = st.file_uploader("Upload PDF(s)", accept_multiple_files=True)
             if uploaded_pdfs:
                 # Process uploaded PDFs
-                process_pdf_upload(uploaded_pdfs)
+                for pdf_file in uploaded_pdfs:
+                    process_pdf_upload(pdf_file, chat)
         elif pdf_option == "Input PDF URL":
             pdf_url = st.text_input("Enter PDF URL")
             if pdf_url:
                 # Process PDF URL
-                process_pdf_url(pdf_url)
+                process_pdf_url(pdf_url, chat)
+
+# Function to process PDF upload and generate a response
+def process_pdf_upload(pdf_file, chat):
+    try:
+        with st.spinner("Processing..."):
+            raw_text = get_pdf_text(pdf_file)
+            st.success("PDF processed successfully.")
+            st.write("Chat with the PDF:")
+            response = chat(raw_text)
+            if response:
+                st.session_state['pdf_history'].append(("Bot", response.text))
+                st.success("Response:")
+                st.write(response.text)
+    except Exception as e:
+        st.error(f"Error processing PDF: {str(e)}")
 
 # Call the main function when the script is executed
 if __name__ == "__main__":
