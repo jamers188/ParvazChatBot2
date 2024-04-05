@@ -115,14 +115,13 @@ def get_pdf_from_url(pdf_url):
         st.error(f"Error loading PDF from URL: {str(e)}")
         return None
 
-# Option to provide PDF URL
 elif option == "Provide PDF URL":
-    pdf_url = st.text_input("Paste PDF URL Here:")
-    if pdf_url:
-        pdf_doc = get_pdf_from_url(pdf_url)
-        if pdf_doc:
-            pdf_docs = [pdf_doc]  # Create a list with the BytesIO object
-            st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
+pdf_url = st.text_input("Paste PDF URL Here:")
+if pdf_url:
+    pdf_doc = get_pdf_from_url(pdf_url)
+    if pdf_doc:
+        pdf_docs = [pdf_doc]  # Create a list with the BytesIO object
+        st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
 
     
     if st.button("Submit & Process"):
