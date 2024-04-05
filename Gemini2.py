@@ -101,19 +101,28 @@ def main_pdf_chat():
     
     if option == "Upload PDF":
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-    elif option == "Provide PDF URL":
-        pdf_url = st.text_input("Paste PDF URL Here:")
-        if pdf_url:
-            try:
-                response = requests.get(pdf_url)
-                if response.status_code == 200:
-                    pdf_doc = BytesIO(response.content)  # Change variable name to pdf_doc
-                    pdf_docs = [pdf_doc]  # Create a list with the BytesIO object
-                    st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
-                else:
-                    st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
-            except Exception as e:
-                st.error(f"Error loading PDF from URL: {str(e)}")
+    # Function to convert PDF content fetched from a URL into a BytesIO object
+def get_pdf_from_url(pdf_url):
+    try:
+        response = requests.get(pdf_url)
+        if response.status_code == 200:
+            pdf_doc = BytesIO(response.content)
+            return pdf_doc
+        else:
+            st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
+            return None
+    except Exception as e:
+        st.error(f"Error loading PDF from URL: {str(e)}")
+        return None
+
+# Option to provide PDF URL
+elif option == "Provide PDF URL":
+    pdf_url = st.text_input("Paste PDF URL Here:")
+    if pdf_url:
+        pdf_doc = get_pdf_from_url(pdf_url)
+        if pdf_doc:
+            pdf_docs = [pdf_doc]  # Create a list with the BytesIO object
+            st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
 
     
     if st.button("Submit & Process"):
