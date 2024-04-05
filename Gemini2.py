@@ -41,6 +41,7 @@ def get_gemini_response(question):
     except generation_types.BlockedPromptException as e:
         st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
 
+
 # Define function to display chat history
 def display_chat_history():
     st.title("Chat History")
@@ -62,42 +63,31 @@ def chat_with_gemini():
             st.session_state['chat_history'].append(("YOU", input_text))
             st.success("The Response is")
 
-            if hasattr(response, 'resolve') and callable(getattr(response, 'resolve')):
-                response.resolve()
-                if hasattr(response, 'parts') and response.parts:
-                    for part in response.parts:
-                        if hasattr(part, 'text') and part.text:
-                            text_line = part.text
-                            st.write(text_line)
-                            st.session_state['chat_history'].append(("TEXT_BOT", text_line))
-                        elif hasattr(part, 'candidates') and part.candidates:
-                            for candidate in part.candidates:
-                                if hasattr(candidate, 'content') and candidate.content:
-                                    text_line = candidate.content.text
-                                    st.write(text_line)
-                                    st.session_state['chat_history'].append(("TEXT_BOT", text_line))
-                                else:
-                                    st.warning("Invalid response format. Unable to extract text from candidates.")
-                        else:
-                            st.warning("Invalid response format. Unable to extract text from parts.")
-                else:
-                    st.warning("Invalid response format. No parts found.")
+            if hasattr(response, 'text'):
+                st.write(response.text)
+                st.session_state['chat_history'].append(("TEXT_BOT", response.text))
+            elif hasattr(response, 'parts'):
+                for part in response.parts:
+                    if hasattr(part, 'text') and part.text:
+                        text_line = part.text
+                        st.write(text_line)
+                        st.session_state['chat_history'].append(("TEXT_BOT", text_line))
+                    elif hasattr(part, 'candidates') and part.candidates:
+                        for candidate in part.candidates:
+                            if hasattr(candidate, 'content') and candidate.content:
+                                text_line = candidate.content.text
+                                st.write(text_line)
+                                st.session_state['chat_history'].append(("TEXT_BOT", text_line))
+                            else:
+                                st.warning("Invalid response format. Unable to extract text from candidates.")
+                    else:
+                        st.warning("Invalid response format. Unable to extract text from parts.")
             else:
-                st.error("Error: Response object does not have a 'resolve' method.")
+                st.error("Error: Invalid response format.")
         else:
             st.error("Error: Failed to retrieve response from the chat service.")
 
 # Define function to extract text from a PDF file
-def extract_text_from_pdf(pdf_file):
-    try:
-        pdf_reader = fitz.open(stream=pdf_file)
-        text = ""
-        for page in pdf_reader:
-            text += page.get_text()
-        return text
-    except Exception as e:
-        st.error(f"Error extracting text from PDF: {str(e)}")
-        return None
 
 # Define function to chat about a PDF
 def chat_about_pdf(pdf_text):
