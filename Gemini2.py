@@ -2,9 +2,9 @@ import streamlit as st
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
+from io import BytesIO
 import requests
 from PyPDF2 import PdfReader
-from io import BytesIO
 
 # Load environment variables from .env file if present
 load_dotenv()
