@@ -108,10 +108,12 @@ def main_pdf_chat():
                 response = requests.get(pdf_url)
                 if response.status_code == 200:
                     pdf_docs = [BytesIO(response.content)]
+                    st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
                 else:
                     st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
             except Exception as e:
                 st.error(f"Error loading PDF from URL: {str(e)}")
+
     
     if st.button("Submit & Process"):
         with st.spinner("Processing..."):
