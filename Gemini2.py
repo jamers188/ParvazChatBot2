@@ -110,17 +110,17 @@ def main1():
                 st.balloons()
 
     elif option == "Provide PDF URL":
-        pdf_url = st.text_input("Enter the URL of the PDF")
-        if st.button("Chat with PDF from URL"):
+        pdf_url = st.text_input("Enter the URL of the PDF", key="pdf_url_input")
+        if st.button("Chat with PDF from URL", key="pdf_url_button"):
             with st.spinner("Fetching PDF from URL..."):
                 pdf_text = get_pdf_text_from_url(pdf_url)
                 if pdf_text:
-                    user_question = st.text_input("Ask a Question from the PDF")
-                    if st.button("Ask"):
+                    user_question = st.text_input("Ask a Question from the PDF", key="pdf_question_input")
+                    if st.button("Ask", key="pdf_ask_button"):
                         if user_question:
                             # Add the user's question to the chat history
                             st.session_state['pdf_history'].append(("YOU", user_question))
-
+    
                             # Process the user's question and generate a response
                             user_input(user_question, [pdf_text])
                         else:
