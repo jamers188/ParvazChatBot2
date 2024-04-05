@@ -1,14 +1,12 @@
 import streamlit as st
 import os
 import json
-from streamlit_lottie import st_lottie
 import google.generativeai as genai
 from dotenv import load_dotenv
 from io import BytesIO
 import requests
 import fitz  # PyMuPDF
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from PIL import Image
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
@@ -58,30 +56,21 @@ if 'pdf_srchistory' not in st.session_state:
 
 # Displaying the home page content
 if selected == "HOME":
-    st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅</span>""", unsafe_allow_html=True)
-
-    st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
-
+    st.markdown("# Welcome to My Streamlit App  ** MyAI 🦅**")
+    st.markdown("#### Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE")
     st.markdown("## Introduction")
-
-    st.markdown(""" <span style='color:#020C0C'> MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases. </span>""", unsafe_allow_html=True)
+    st.markdown("MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases.")
 
     st.markdown("""
-    ### <span style='color:#0F0F0F'>Instructions:</span>
-    <span style='color:#222831'>  📖 Navigate to Prompt CHAT for the Text based results..</span>
-    <br>
-    <span style='color:#222831'>  📸 Navigate to IMAGE CHAT for the IMAGE based results..</span>
-    <br>
-    <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
-    <br>
-    <br>
-     <span style='color:#222831'> Explore the Possibilities:</span>
-     <br>
-     
-     <span style='color:#222831'> ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs. 
-     </span>
-    <br>
-""", unsafe_allow_html=True)
+    ### Instructions:
+    📖 Navigate to Prompt CHAT for the Text based results..
+    📸 Navigate to IMAGE CHAT for the IMAGE based results..
+    📁 Navigate to PDF CHAT to chat with the PDF'S..
+    
+    Explore the Possibilities:
+    
+    ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs.
+    """)
 
 # Function to get responses from the Gemini chatbot
 def get_gemini_response(question):
@@ -174,7 +163,7 @@ def chat_with_gemini():
         else:
             st.error("Error: Failed to retrieve response from the chat service.")
 
-# Function to chat with the Gemini chatbot using PDF content
+# Function to chat about PDF content
 def chat_about_pdf(pdf_text):
     input_text = st.text_input("Ask about the PDF content")
     if input_text:
