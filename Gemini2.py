@@ -271,42 +271,35 @@ if selected == "IMAGE CHAT":
 
 
 if selected == "PDF CHAT":
-    # Function to extract text from PDF documents
-    def get_pdf_text(pdf_docs):
-        text = ""
-        for pdf in pdf_docs:
+    # Option to choose between file upload and URL input
+    option = st.radio("Choose an option", ["Upload PDF", "Provide PDF URL"])
+
+    if option == "Upload PDF":
+        uploaded_file = st.file_uploader("Choose a PDF file...", type=["pdf"])
+        if uploaded_file:
             try:
-                # Check if the uploaded file is a PDF
-                if pdf.name.endswith('.pdf'):
-                    # Read the PDF content
-                    with pdf as file:
-                        pdf_reader = PdfReader(file)
-                        for page in pdf_reader.pages:
-                            text += page.extract_text()
-                else:
-                    # Assume it's a URL and try to fetch the PDF content
-                    response = requests.get(pdf)
-                    if response.status_code == 200:
-                        pdf_bytes = BytesIO(response.content)
-                        pdf_reader = PdfReader(pdf_bytes)
-                        for page in pdf_reader.pages:
-                            text += page.extract_text()
-                    else:
-                        st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
+                pdf_reader = PdfReader(uploaded_file)
+                num_pages = len(pdf_reader.pages)
+                st.success(f"Uploaded PDF with {num_pages} pages.")
+                st.session_state['pdf_srchistory'].append(("PDFS UPLOADED", "Uploaded PDF"))
             except Exception as e:
-                st.error(f"Error processing PDF: {str(e)}")
-        return text
+                st.error(f"Error loading uploaded PDF file: {str(e)}")
 
-    st.subheader("Upload PDF or Paste URL")
-    upload_file = st.file_uploader("Upload PDF File", type=['pdf'])
-    pdf_url = st.text_input("Paste PDF URL")
-
-    pdf_docs = []
-    if upload_file:
-        pdf_docs.append(upload_file)
-    elif pdf_url:
-        pdf_docs.append(pdf_url)
-
+    elif option == "Provide PDF URL":
+        pdf_url = st.text_input("Paste PDF URL Here:")
+        if pdf_url:
+            try:
+                response = requests.get(pdf_url)
+                if response.status_code == 200:
+                    pdf_bytes = BytesIO(response.content)
+                    pdf_reader = PdfReader(pdf_bytes)
+                    num_pages = len(pdf_reader.pages)
+                    st.success(f"PDF from URL contains {num_pages} pages.")
+                    st.session_state['pdf_srchistory'].append(("PDFS UPLOADED", "PDF from URL"))
+                else:
+                    st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
+            except Exception as e:
+                st.error(f"Error loading PDF from URL: {str(e)}")
 
 
 
