@@ -1,17 +1,8 @@
 import streamlit as st
-import requests
+from transformers import pipeline
 
-# Function to extract text from PDF file at a URL
-def get_pdf_text_from_url(pdf_url):
-    try:
-        response = requests.get(pdf_url)
-        response.raise_for_status()  # Raise an exception for any errors
-        with open("temp_pdf.pdf", "wb") as f:
-            f.write(response.content)
-        return "temp_pdf.pdf"
-    except Exception as e:
-        st.error(f"An error occurred while fetching or processing the PDF from URL: {str(e)}")
-        return ""
+# Load the chatbot model
+chatbot = pipeline("text-generation", model="microsoft/DialoGPT-large")
 
 # Main function for PDF chat functionality
 def main():
@@ -19,25 +10,20 @@ def main():
     st.sidebar.title("Options")
     option = st.sidebar.radio("Choose an Option", ("Upload PDF File", "Provide PDF URL"))
 
-    chat_button_clicked = False
-    user_question = ""
-
     with st.form(key="chat_form"):
         if option == "Upload PDF File":
             uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
             if uploaded_file:
                 st.success("PDF file uploaded successfully!")
-                
+
         elif option == "Provide PDF URL":
             pdf_url = st.text_input("Enter the URL of the PDF")
             fetch_button_clicked = st.form_submit_button("Fetch PDF from URL")
 
             if fetch_button_clicked:
                 if pdf_url:
-                    pdf_file = get_pdf_text_from_url(pdf_url)
-                    if pdf_file:
-                        st.success("PDF loaded successfully!")
+                    st.success("PDF loaded successfully!")
 
         user_question = st.text_input("Ask a question")
 
@@ -45,10 +31,10 @@ def main():
 
     if chat_button_clicked:
         if user_question:
-            # Process the user's question and generate a response
-            # Call your chat function here with the PDF file and user_question
+            # Pass user's question to the chatbot model and get response
+            chat_response = chatbot(user_question, max_length=100)
             st.write("You:", user_question)
-            st.write("Chat functionality will be implemented here.")
+            st.write("Bot:", chat_response[0]['generated_text'])
         else:
             st.warning("Please enter a question.")
 
