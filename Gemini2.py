@@ -47,7 +47,7 @@ st.set_page_config(page_title="MyAI", page_icon="🤖")
 selected_option = st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"])
 
 # Displaying the home page content
-if selected_option == "HOME":
+if selected_option == 'HOME':
     # Displaying the home page content
     st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅</span>""", unsafe_allow_html=True)
     st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
@@ -70,15 +70,6 @@ if selected_option == "HOME":
     <br>
 """, unsafe_allow_html=True)
 
-# Function to get responses from the Gemini chatbot
-def get_gemini_response(question):
-    try:
-        response = chat.send_message(question, stream=True)
-        return response
-    except generation_types.BlockedPromptException as e:
-        st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
-
-# Displaying the chat history
 elif selected_option == 'CHAT_HISTORY':
     st.title("CHAT HISTORY")
     # Create two columns for buttons
