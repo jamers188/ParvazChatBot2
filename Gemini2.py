@@ -4,6 +4,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import requests
 from PyPDF2 import PdfReader
+from io import BytesIO
 
 # Load environment variables from .env file if present
 load_dotenv()
@@ -35,7 +36,7 @@ def process_pdf_url(pdf_url):
         # Download PDF from URL
         response = requests.get(pdf_url)
         if response.status_code == 200:
-            pdf_content = response.content
+            pdf_content = BytesIO(response.content)  # Wrap bytes in BytesIO object
             raw_text = get_pdf_text(pdf_content)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
