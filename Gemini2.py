@@ -3,7 +3,6 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 import requests
-from io import BytesIO
 from PyPDF2 import PdfReader
 
 # Load environment variables from .env file if present
@@ -25,9 +24,10 @@ def main():
         st.title("PDF CHAT")
         # Option to input PDF URL
         pdf_url = st.text_input("Enter PDF URL")
-        if pdf_url:
-            # Process PDF URL
-            process_pdf_url(pdf_url)
+        if st.button("Submit"):
+            if pdf_url:
+                # Process PDF URL
+                process_pdf_url(pdf_url)
 
 # Function to process PDF URL input and generate a response
 def process_pdf_url(pdf_url):
@@ -35,14 +35,13 @@ def process_pdf_url(pdf_url):
         # Download PDF from URL
         response = requests.get(pdf_url)
         if response.status_code == 200:
-            pdf_content = BytesIO(response.content)
+            pdf_content = response.content
             raw_text = get_pdf_text(pdf_content)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
             # Chat with the PDF using GenerativeAI
             model = genai.GenerativeModel("gemini-pro")
-            chat_session = model.start_chat(history=raw_text)
-            response = chat_session.query("Hello")
+            response = model(raw_text)
             if response:
                 st.success("Response:")
                 st.write(response)
