@@ -26,10 +26,11 @@ def main():
         if uploaded_file:
             st.success("PDF file uploaded successfully!")
             user_question = st.text_input("Ask a question")
-            if st.button("Chat"):
+            if st.button("Ask"):
                 if user_question:
                     # Process the user's question and generate a response
                     # Call your chat function here with the PDF file and user_question
+                    st.write("You:", user_question)
                     st.write("Chat functionality will be implemented here.")
                 else:
                     st.warning("Please enter a question.")
@@ -40,10 +41,11 @@ def main():
                 pdf_file = get_pdf_text_from_url(pdf_url)
                 if pdf_file:
                     user_question = st.text_input("Ask a question")
-                    if st.button("Chat"):
+                    if st.button("Ask"):
                         if user_question:
                             # Process the user's question and generate a response
                             # Call your chat function here with the PDF file and user_question
+                            st.write("You:", user_question)
                             st.write("Chat functionality will be implemented here.")
                         else:
                             st.warning("Please enter a question.")
