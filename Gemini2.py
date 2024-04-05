@@ -1,22 +1,28 @@
 import streamlit as st
 import os
 import json
+from streamlit_lottie import st_lottie
+import google.generativeai as genai
+from dotenv import load_dotenv
 from io import BytesIO
 import requests
 from PyPDF2 import PdfReader
-
-# Import the Google Generative AI library
-import google.generativeai as genai
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from PIL import Image
+from langchain_community.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain.prompts import PromptTemplate
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from google.generativeai.types import generation_types
 
 # Load environment variables from .env file if present
-from dotenv import load_dotenv
 load_dotenv()
 
-# Configure Google Generative AI API
 API_KEY = os.environ.get("GOOGLE_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# Load the GenerativeModel for interacting with Google Generative AI API
+## function to load Gemini Pro model and get responses
 model = genai.GenerativeModel("gemini-pro")
 chat = model.start_chat(history=[])
 
@@ -88,12 +94,15 @@ def process_pdf_upload(pdf_files):
             raw_text = get_pdf_text(pdf_files)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            response = chat.send_message(raw_text, stream=True)
-            if response:
-                st.session_state['pdf_history'].append(("PDF Uploaded", "Yes"))
-                st.session_state['pdf_history'].append(("Bot", response.text))
-                st.success("Response:")
-                st.write(response.text)
+            try:
+                response = chat.send_message(raw_text, stream=True)
+                if response:
+                    st.session_state['pdf_history'].append(("PDF Uploaded", "Yes"))
+                    st.session_state['pdf_history'].append(("Bot", response.text))
+                    st.success("Response:")
+                    st.write(response.text)
+            except Exception as e:
+                st.error(f"Error processing PDF: {str(e)}")
 
 # Function to process PDF URL input and generate a response
 def process_pdf_url(pdf_url):
@@ -107,12 +116,15 @@ def process_pdf_url(pdf_url):
                     raw_text = get_pdf_text([pdf_content])
                     st.success("PDF processed successfully.")
                     st.write("Chat with the PDF:")
-                    response = chat.send_message(raw_text, stream=True)
-                    if response:
-                        st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
-                        st.session_state['pdf_history'].append(("Bot", response.text))
-                        st.success("Response:")
-                        st.write(response.text)
+                    try:
+                        response = chat.send_message(raw_text, stream=True)
+                        if response:
+                            st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
+                            st.session_state['pdf_history'].append(("Bot", response.text))
+                            st.success("Response:")
+                            st.write(response.text)
+                    except Exception as e:
+                        st.error(f"Error processing PDF: {str(e)}")
                 else:
                     st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
             except Exception as e:
