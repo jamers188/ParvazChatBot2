@@ -154,64 +154,7 @@ def main():
         chat_with_gemini()
 
     elif selected == "IMAGE CHAT":
-        vision_model = genai.GenerativeModel('gemini-pro-vision')
-    
-    def vscontent(input_text_1, image):
-        response = vision_model.generate_content([input_text_1, image], stream=True)
-        return response
-    
-    
-
-    # Option to choose between file upload and URL input
-
-    option = st.radio("Choose an option", ["Upload Image", "Provide Image URL"])
-
-    if option == "Upload Image":
-        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-        if uploaded_file:
-            try:
-                image = Image.open(uploaded_file)
-                st.image(image, caption='Uploaded Image', use_column_width=True)
-                st.session_state['img_srchistory'].append(("SOURCE", option))
-            except Exception as e:
-              st.error(f"Error loading uploaded image: {str(e)}")
-
-
-    elif option == "Provide Image URL":
-         image_url = st.text_input("Paste Image URL Here(Paste Image address):")
-         if image_url:
-             try:
-                 response = requests.get(image_url)
-                 if response.status_code == 200:
-                     image = Image.open(BytesIO(response.content))
-                     st.image(image, caption='Image from URL', use_column_width=True)
-                     st.session_state['img_srchistory'].append(("SOURCE", option))
-                 else:
-                     st.error(f"Failed to retrieve image from URL. Status code: {response.status_code}")
-             except Exception as e:
-                 st.error(f"Error loading image from URL: {str(e)}")
-
-
-
-
-                
-
-    
-    # Use the vision model
-    if 'image' in locals():
-        try:
-            input_text_1 = st.chat_input("Ask about the image")
-            if input_text_1:
-                response = vscontent(input_text_1, image)
-                response.resolve()
-
-                st.session_state['img_history'].append(("YOU", input_text_1))
-                st.session_state['img_history'].append(("IMAGE_BOT", response.text))
-                st.balloons()
-                st.markdown(f"**Generated text:** {response.text}")
-
-        except Exception as e:
-            st.error(f"An error occurred: {str(e)}")
+        pass  # Placeholder for image chat functionality
 
     elif selected == "PDF CHAT":
         st.subheader("Upload PDF or Paste URL")
