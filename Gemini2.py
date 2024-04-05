@@ -202,13 +202,13 @@ def main():
                     st.error("Error: Response object does not have a 'resolve' method.")
             else:
                 st.error("Error: Failed to retrieve response from the chat service.")
-
-elif selected == "IMAGE CHAT":
-    vision_model = genai.GenerativeModel('gemini-pro-vision')
-    
-    def vscontent(input_text_1, image):
-        response = vision_model.generate_content([input_text_1, image], stream=True)
-        return response
+            
+        
+    elif selected == "IMAGE CHAT":
+        vision_model = genai.GenerativeModel('gemini-pro-vision')
+        def vscontent(input_text_1, image):
+            response = vision_model.generate_content([input_text_1, image], stream=True)
+            return response
     
     
 
