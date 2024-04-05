@@ -379,6 +379,7 @@ if selected == "PDF CHAT":
         except Exception as e:
          st.error(f"An error occurred while processing the question: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
+# Function to fetch text from URL
 def fetch_text_from_url(url):
     try:
         response = requests.get(url)
@@ -440,4 +441,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
