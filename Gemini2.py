@@ -79,7 +79,7 @@ def get_gemini_response(question):
         st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
 
 # Displaying the chat history
-elif selected_option == 'CHAT HISTORY':
+elif selected_option == 'CHAT_HISTORY':
     st.title("CHAT HISTORY")
     # Create two columns for buttons
     text_history_button, image_history_button, pdf_history_button = st.columns([1, 1, 1])
@@ -185,4 +185,3 @@ def process_pdf_url(pdf_url):
 # Run the Streamlit app
 if __name__ == "__main__":
     main()
-
