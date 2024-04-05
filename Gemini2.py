@@ -27,6 +27,37 @@ model = genai.GenerativeModel("gemini-pro")
 chat = model.start_chat(history=[])
 
 from streamlit_option_menu import option_menu
+selected = st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"])
+
+# Use option_menu with the defined styles
+selected = option_menu(
+    menu_title=None,
+    options=["HOME","Prompt Chat", "IMAGE CHAT" ,"PDF CHAT","CHAT HISTORY"],
+    icons=['house',"pen" ,'image','book','chat','person'],
+    default_index=0,
+    menu_icon='user',
+    orientation="horizontal",
+    styles="""
+    <style>
+        .option-menu {
+            width: 200px; /* Set the desired width */
+            margin-right: 20px; /* Set the desired spacing */
+        }
+    </style>
+"""
+)
+
+# Initialize session state for chat history,image history,pdf history if it doesn't exist
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
+if 'img_history' not in st.session_state:
+    st.session_state['img_history'] = []
+if 'img_srchistory' not in st.session_state:
+    st.session_state['img_srchistory'] = []
+if 'pdf_history' not in st.session_state:
+    st.session_state['pdf_history'] = []
+if 'pdf_srchistory' not in st.session_state:
+    st.session_state['pdf_srchistory'] = []
 
 # Initialize streamlit app
 st.set_page_config(page_title="MyAI", page_icon='🤖')
