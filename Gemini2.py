@@ -120,6 +120,7 @@ def main_pdf_chat():
                 return
             
             pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
+
             if not pdf_docs:
                 st.error("Please upload PDF files only.")
                 return
