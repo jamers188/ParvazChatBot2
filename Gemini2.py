@@ -1,20 +1,32 @@
 import streamlit as st
 import os
 import json
+from streamlit_lottie import st_lottie
+import google.generativeai as genai
+from dotenv import load_dotenv
 from io import BytesIO
 import requests
 from PyPDF2 import PdfReader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from PIL import Image
+from langchain_community.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain.prompts import PromptTemplate
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from google.generativeai.types import generation_types
 
 # Load environment variables from .env file if present
-from dotenv import load_dotenv
-
 load_dotenv()
 
 API_KEY = os.environ.get("GOOGLE_API_KEY")
+genai.configure(api_key=API_KEY)
 
 ## function to load Gemini Pro model and get responses
-# Assuming genai is correctly installed and configured
-# Assuming model is defined and configured correctly
+model = genai.GenerativeModel("gemini-pro")
+chat = model.start_chat(history=[])
+
+from streamlit_option_menu import option_menu
 
 # Initialize session state for chat history, image history, PDF history, etc.
 if 'chat_history' not in st.session_state:
@@ -31,8 +43,11 @@ if 'pdf_srchistory' not in st.session_state:
 # Initialize streamlit app
 st.set_page_config(page_title="MyAI", page_icon="🤖")
 
+# Get the selected option from the sidebar
+selected_option = st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"])
+
 # Displaying the home page content
-if st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"]) == "HOME":
+if selected_option == "HOME":
     # Displaying the home page content
     st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅</span>""", unsafe_allow_html=True)
     st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
@@ -55,8 +70,16 @@ if st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT"
     <br>
 """, unsafe_allow_html=True)
 
+# Function to get responses from the Gemini chatbot
+def get_gemini_response(question):
+    try:
+        response = chat.send_message(question, stream=True)
+        return response
+    except generation_types.BlockedPromptException as e:
+        st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
+
 # Displaying the chat history
-if st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"]) == 'CHAT HISTORY':
+elif selected_option == 'CHAT HISTORY':
     st.title("CHAT HISTORY")
     # Create two columns for buttons
     text_history_button, image_history_button, pdf_history_button = st.columns([1, 1, 1])
@@ -104,7 +127,7 @@ if st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT"
     st.warning("THE CHAT HISTORY WILL BE LOST ONCE THE SESSION EXPIRES")
 
 # Displaying the PDF chat interface
-if st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"]) == "PDF CHAT":
+elif selected_option == "PDF CHAT":
     st.title("PDF CHAT")
     # Option to choose between file upload and URL input
     pdf_option = st.radio("Choose an option", ["Upload PDF", "Input PDF URL"])
@@ -158,3 +181,8 @@ def process_pdf_url(pdf_url):
                     st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
             except Exception as e:
                 st.error(f"Error processing PDF from URL: {str(e)}")
+
+# Run the Streamlit app
+if __name__ == "__main__":
+    main()
+
