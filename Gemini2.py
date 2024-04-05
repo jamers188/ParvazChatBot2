@@ -21,6 +21,7 @@ def main():
     option = st.sidebar.radio("Choose an Option", ("Upload PDF File", "Provide PDF URL"))
 
     chat_button_clicked = False
+    user_question = ""
 
     with st.form(key="chat_form"):
         if option == "Upload PDF File":
