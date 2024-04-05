@@ -368,34 +368,33 @@ if user_question:
     if not pdf_docs:
      st.error("Please upload PDF files only.")
  return
-     raw_text = get_pdf_text(pdf_docs)
+ raw_text = get_pdf_text(pdf_docs)
+ text_chunks = get_text_chunks(raw_text)
+ get_vector_store(text_chunks)
+ st.success("Done")
+ pdf_names = [pdf.name for pdf in pdf_docs]
+ st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+ st.balloons()
+elif option == "Provide PDF URL":
+ pdf_url = st.text_input("Paste PDF URL Here (Paste PDF address):")
+ if pdf_url:
+  try:
+   response = requests.get(pdf_url)
+   if response.status_code == 200:
+    pdf_file = BytesIO(response.content)
+    pdf_reader = PdfReader(pdf_file)
+    raw_text = ""
+    for page in pdf_reader.pages:
+     raw_text += page.extract_text()
      text_chunks = get_text_chunks(raw_text)
      get_vector_store(text_chunks)
-     st.success("Done")
-     pdf_names = [pdf.name for pdf in pdf_docs]
-     st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+     st.success("PDF Loaded Successfully")
+     st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_url))
      st.balloons()
-    elif option == "Provide PDF URL":
-     pdf_url = st.text_input("Paste PDF URL Here (Paste PDF address):")
-     if pdf_url:
-      try:
-       response = requests.get(pdf_url)
-       if response.status_code == 200:
-        pdf_file = BytesIO(response.content)
-        pdf_reader = PdfReader(pdf_file)
-        raw_text = ""
-        for page in pdf_reader.pages:
-         raw_text += page.extract_text()
-         text_chunks = get_text_chunks(raw_text)
-         get_vector_store(text_chunks)
-         st.success("PDF Loaded Successfully")
-         st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_url))
-         st.balloons()
-       else:
-        st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
-      except Exception as e:
-       st.error(f"Error loading PDF from URL: {str(e)}")
+   else:
+    st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
+  except Exception as e:
+   st.error(f"Error loading PDF from URL: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
- #
     if __name__ == "__main__":
         main1()
