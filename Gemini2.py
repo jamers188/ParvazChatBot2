@@ -39,10 +39,10 @@ def process_pdf_url(pdf_url):
             raw_text = get_pdf_text(pdf_content)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            response = genai.ChatGoogleGenerativeAI().generate_text(raw_text)
+            response = genai.GenerativeModel("gemini-pro")(raw_text)
             if response:
                 st.success("Response:")
-                st.write(response)
+                st.write(response.text)
         else:
             st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
     except Exception as e:
