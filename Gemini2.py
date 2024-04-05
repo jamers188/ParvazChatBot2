@@ -6,7 +6,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from io import BytesIO
 import requests
-from PyPDF2 import PdfReader
+import fitz  # PyMuPDF
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from PIL import Image
 from langchain_community.vectorstores import FAISS
@@ -290,14 +290,14 @@ if selected == "PDF CHAT":
             st.error(f"Error loading PDF from URL: {str(e)}")
 
     if pdf_docs:
-        # Function to extract text from PDF documents
+        # Function to extract text from PDF documents using PyMuPDF
         def get_pdf_text(pdf_docs):
             text = ""
             for pdf in pdf_docs:
                 try:
-                    pdf_reader = PdfReader(pdf)
-                    for page in pdf_reader.pages:
-                        text += page.extract_text()
+                    pdf_reader = fitz.open(pdf)
+                    for page in pdf_reader:
+                        text += page.get_text()
                 except Exception as e:
                     st.error(f"Error processing PDF: {str(e)}")
             return text
