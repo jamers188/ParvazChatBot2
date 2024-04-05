@@ -168,6 +168,7 @@ def main():
                     margin-right: 20px; /* Set the desired spacing */
                 }
             </style>
+        """
         )
 
     if selected == "HOME":
