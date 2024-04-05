@@ -111,19 +111,19 @@ def main1():
                 st.balloons()
 
     elif option == "Provide PDF URL":
-        pdf_url = st.text_input("Enter the URL of the PDF")
-        if st.button("Chat with PDF from URL"):
-            with st.spinner("Fetching PDF from URL..."):
-                pdf_text = get_pdf_text_from_url(pdf_url)
-                if pdf_text:
-                    user_question = st.text_input("Ask a Question from the PDF")
-                    if st.button("Ask"):
-                        if user_question:
-                            user_input(user_question, [pdf_text])  # Pass pdf_text as docs
-                        else:
-                            st.warning("Please enter a question.")
-                else:
-                    st.error("Failed to fetch PDF from the provided URL.")
+         pdf_url = st.text_input("Enter the URL of the PDF")
+         if st.button("Chat with PDF from URL"):
+             with st.spinner("Fetching PDF from URL..."):
+                 pdf_text = get_pdf_text_from_url(pdf_url)
+                 if pdf_text:
+                     user_question = st.text_input("Ask a Question from the PDF")
+                     if st.button("Ask"):
+                         if user_question:
+                             user_input(user_question, [pdf_text])  # Pass pdf_text as docs
+                         else:
+                             st.warning("Please enter a question.")
+                 else:
+                     st.error("Failed to fetch PDF from the provided URL.")
 
 
 # Main block to run the app
