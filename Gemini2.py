@@ -130,23 +130,27 @@ def main_pdf_chat():
                     pdf_docs = [BytesIO(response.content)]
                 else:
                     st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
-                    return
             except Exception as e:
                 st.error(f"Error loading PDF from URL: {str(e)}")
-                return
     
     if st.button("Submit & Process"):
         with st.spinner("Processing..."):
-            try:
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done")
-                pdf_names = ["PDF from URL" if option == "Provide PDF URL" else pdf.name for pdf in pdf_docs]
-                st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-                st.balloons()
-            except Exception as e:
-                st.error(f"An error occurred while processing the PDF: {str(e)}")
+            if 'pdf_docs' not in locals():
+                st.error("Please upload PDF files or provide PDF URL.")
+                return
+            
+            pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
+            if not pdf_docs:
+                st.error("Please upload PDF files only.")
+                return
+
+            raw_text = get_pdf_text(pdf_docs)
+            text_chunks = get_text_chunks(raw_text)
+            get_vector_store(text_chunks)
+            st.success("Done")
+            pdf_names = [pdf.name for pdf in pdf_docs]
+            st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+            st.balloons()
 
 # Function to process user input and generate a response
 def user_input(user_question):
@@ -155,12 +159,14 @@ def user_input(user_question):
         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
         docs = new_db.similarity_search(user_question)
         chain = get_conversational_chain()
-        response = chain({"input_documents":docs, "question": user_question}, return_only_outputs=True)
-        st.write("Reply: ", response["output_text"])
+        response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+        st.write("Reply: ", response1["output_text"])
+        output_Text = response1["output_text"]
         st.session_state["pdf_history"].append(("YOU", user_question))
-        st.session_state["pdf_history"].append(("PDF_BOT", response["output_text"]))
+        st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
+
 
 if selected == "Prompt Chat":
     input_text = st.text_input("Ask your Question")
