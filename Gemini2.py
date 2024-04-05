@@ -36,7 +36,7 @@ def main():
                     st.warning("Please enter a question.")
     elif option == "Provide PDF URL":
         pdf_url = st.text_input("Enter the URL of the PDF")
-        if st.button("Chat with PDF from URL"):
+        if st.button("Fetch PDF from URL"):
             if pdf_url:
                 pdf_file = get_pdf_text_from_url(pdf_url)
                 if pdf_file:
