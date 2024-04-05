@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-import json
 from streamlit_lottie import st_lottie
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -14,13 +13,13 @@ load_dotenv()
 API_KEY = os.environ.get("GOOGLE_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# Function to load Gemini Pro model and start chat
+# Function to load Gemini Pro model
 def load_model():
-    model = genai.ChatSession("gemini-pro")
+    model = genai.GenerativeModel("gemini-pro")
     return model
 
 # Function to process PDF URL input and generate a response
-def process_pdf_url(pdf_url, chat):
+def process_pdf_url(pdf_url, model):
     try:
         # Download PDF from URL
         response = requests.get(pdf_url)
@@ -29,7 +28,7 @@ def process_pdf_url(pdf_url, chat):
             raw_text = get_pdf_text(pdf_content)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            response = chat.generate_text(raw_text)
+            response = model(raw_text)
             if response:
                 st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
                 st.session_state['pdf_history'].append(("Bot", response.text))
@@ -60,7 +59,7 @@ def main():
     st.set_page_config(page_title="MyAI", page_icon="🤖")
 
     # Load model
-    chat = load_model()
+    model = load_model()
 
     # Define selected option
     selected_option = st.sidebar.selectbox("Select an Option", ["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"])
@@ -75,21 +74,21 @@ def main():
             if uploaded_pdfs:
                 # Process uploaded PDFs
                 for pdf_file in uploaded_pdfs:
-                    process_pdf_upload(pdf_file, chat)
+                    process_pdf_upload(pdf_file, model)
         elif pdf_option == "Input PDF URL":
             pdf_url = st.text_input("Enter PDF URL")
             if pdf_url:
                 # Process PDF URL
-                process_pdf_url(pdf_url, chat)
+                process_pdf_url(pdf_url, model)
 
 # Function to process PDF upload and generate a response
-def process_pdf_upload(pdf_file, chat):
+def process_pdf_upload(pdf_file, model):
     try:
         with st.spinner("Processing..."):
             raw_text = get_pdf_text(pdf_file)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            response = chat.generate_text(raw_text)
+            response = model(raw_text)
             if response:
                 st.session_state['pdf_history'].append(("Bot", response.text))
                 st.success("Response:")
