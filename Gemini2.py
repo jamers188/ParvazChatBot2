@@ -34,12 +34,17 @@ def main():
                     st.write("Chat functionality will be implemented here.")
                 else:
                     st.warning("Please enter a question.")
+
     elif option == "Provide PDF URL":
         pdf_url = st.text_input("Enter the URL of the PDF")
-        if st.button("Chat with PDF from URL"):
+
+        fetch_button_clicked = st.button("Fetch PDF from URL")
+
+        if fetch_button_clicked:
             if pdf_url:
                 pdf_file = get_pdf_text_from_url(pdf_url)
                 if pdf_file:
+                    st.success("PDF loaded successfully!")
                     user_question = st.text_input("Ask a question")
                     if st.button("Chat"):
                         if user_question:
