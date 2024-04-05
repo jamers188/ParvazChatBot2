@@ -41,7 +41,8 @@ def process_pdf_url(pdf_url):
             st.write("Chat with the PDF:")
             # Chat with the PDF using GenerativeAI
             model = genai.GenerativeModel("gemini-pro")
-            response = model.start_chat(history=raw_text)
+            chat_session = model.start_chat(history=raw_text)
+            response = chat_session.query("Hello")
             if response:
                 st.success("Response:")
                 st.write(response.text)
