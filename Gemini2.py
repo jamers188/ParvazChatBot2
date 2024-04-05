@@ -49,6 +49,7 @@ def get_conversational_chain():
     return chain
 
 # Function to process user input and generate a response
+# Function to process user input and generate a response
 def user_input(user_question, docs):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     try:
@@ -63,6 +64,9 @@ def user_input(user_question, docs):
         st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
+
+        # If an error occurs, ensure to display the user's question
+        st.session_state["pdf_history"].append(("YOU", user_question))
 
 # Function to get PDF text from URL
 def get_pdf_text_from_url(pdf_url):
