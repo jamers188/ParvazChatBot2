@@ -49,7 +49,6 @@ def get_conversational_chain():
     return chain
 
 # Function to process user input and generate a response
-# Function to process user input and generate a response
 def user_input(user_question, docs):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     try:
@@ -86,11 +85,7 @@ def get_pdf_text_from_url(pdf_url):
 def main1():
     st.header("Chat with PDF ")
 
-    user_question = st.chat_input("Ask a Question from the PDF Files")
-
-    if user_question:
-        user_input(user_question)
-        #st.session_state['pdf_history'].append(("YOU", user_question))
+    user_question = st.text_input("Ask a Question from the PDF")
 
     st.title("Menu:")
     st.sidebar.header("Options")
@@ -123,12 +118,15 @@ def main1():
                     user_question = st.text_input("Ask a Question from the PDF")
                     if st.button("Ask"):
                         if user_question:
-                            user_input(user_question, [pdf_text])  # Pass pdf_text as docs
+                            # Add the user's question to the chat history
+                            st.session_state['pdf_history'].append(("YOU", user_question))
+
+                            # Process the user's question and generate a response
+                            user_input(user_question, [pdf_text])
                         else:
                             st.warning("Please enter a question.")
                 else:
                     st.error("Failed to fetch PDF from the provided URL.")
-
 
 # Main block to run the app
 if __name__ == "__main__":
