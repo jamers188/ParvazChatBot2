@@ -160,47 +160,17 @@ def chat_with_gemini():
                         st.warning("Invalid response format. Unable to extract text from parts.")
             else:
                 st.error("Error: Invalid response format.")
-        else:
-            st.error("Error: Failed to retrieve response from the chat service.")
 
-# Function to chat about PDF content
-def chat_about_pdf(pdf_text):
-    input_text = st.text_input("Ask about the PDF content")
-    if input_text:
-        response = get_gemini_response(input_text)
-        if response:
-            st.session_state['pdf_history'].append(("YOU", input_text))
-            st.session_state['pdf_history'].append(("PDF_BOT", response.text))
-            st.write(response.text)
-
-# Main function to run the app
+# Main function
 def main():
-    st.set_page_config(page_title="MyAI")
+    st.title("Chat with Gemini AI")
+    st.write("Select an option from the menu on the left to chat with the Gemini AI.")
 
-    if selected == "HOME":
-        st.markdown("# Welcome to My Streamlit App  ** MyAI 🦅**")
-        st.markdown("#### Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE")
-        st.markdown("## Introduction")
-        st.markdown("MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases.")
-
-        st.markdown("""
-        ### Instructions:
-        📖 Navigate to Prompt CHAT for the Text based results..
-        📸 Navigate to IMAGE CHAT for the IMAGE based results..
-        📁 Navigate to PDF CHAT to chat with the PDF'S..
-        
-        Explore the Possibilities:
-        
-        ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs.
-        """)
-
-    elif selected == "Prompt Chat":
+    if selected == "Prompt Chat":
         chat_with_gemini()
 
     elif selected == "CHAT HISTORY":
         display_chat_history()
-
-    st.warning("THE CHAT HISTORY WILL BE LOST ONCE THE SESSION EXPIRES")
 
 if __name__ == "__main__":
     main()
