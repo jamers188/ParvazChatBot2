@@ -173,6 +173,7 @@ def process_pdf_url(pdf_url):
             except Exception as e:
                 st.error(f"Error processing PDF from URL: {str(e)}")
 
+
 # Run the Streamlit app
 if __name__ == "__main__":
     main()
