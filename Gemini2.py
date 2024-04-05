@@ -22,39 +22,126 @@ load_dotenv()
 API_KEY = os.environ.get("GOOGLE_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# Initialize the Gemini Pro model and start the chat
+## function to load Gemini Pro model and get responses
 model = genai.GenerativeModel("gemini-pro")
 chat = model.start_chat(history=[])
 
-# Initialize Streamlit app
-st.set_page_config(page_title="MyAI", page_icon='🤖')
+# Use option_menu with the defined styles
+selected = option_menu(
+    menu_title=None,
+    options=["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"],
+    icons=['house', "pen", 'image', 'book', 'chat', 'person'],
+    default_index=0,
+    menu_icon='user',
+    orientation="horizontal",
+    styles="""
+    <style>
+        .option-menu {
+            width: 200px;
+            margin-right: 20px;
+        }
+    </style>
+"""
+)
 
-# Initialize session state for chat history
+# Initialize session state for chat history,image history,pdf history if it doesn't exist
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
+if 'img_history' not in st.session_state:
+    st.session_state['img_history'] = []
+if 'img_srchistory' not in st.session_state:
+    st.session_state['img_srchistory'] = []
+if 'pdf_history' not in st.session_state:
+    st.session_state['pdf_history'] = []
+if 'pdf_srchistory' not in st.session_state:
+    st.session_state['pdf_srchistory'] = []
 
-# Define function to get responses from the Gemini chatbot
+# Displaying the home page content
+if selected == "HOME":
+    st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅</span>""", unsafe_allow_html=True)
+
+    st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
+
+    st.markdown("## Introduction")
+
+    st.markdown(""" <span style='color:#020C0C'> MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases. </span>""", unsafe_allow_html=True)
+
+    st.markdown("""
+    ### <span style='color:#0F0F0F'>Instructions:</span>
+    <span style='color:#222831'>  📖 Navigate to Prompt CHAT for the Text based results..</span>
+    <br>
+    <span style='color:#222831'>  📸 Navigate to IMAGE CHAT for the IMAGE based results..</span>
+    <br>
+    <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
+    <br>
+    <br>
+     <span style='color:#222831'> Explore the Possibilities:</span>
+     <br>
+     
+     <span style='color:#222831'> ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs. 
+     </span>
+    <br>
+""", unsafe_allow_html=True)
+
+# Function to get responses from the Gemini chatbot
 def get_gemini_response(question):
     try:
         response = chat.send_message(question, stream=True)
         return response
-    except generation_types.BlockedPromptException as e:
+    except genai.types.generation_types.BlockedPromptException as e:
         st.error("Sorry, the provided prompt triggered a content filter. Please try again with a different prompt.")
 
-
-# Define function to display chat history
+# Function to display chat history
 def display_chat_history():
-    st.title("Chat History")
-    if st.session_state['chat_history']:
-        for role, text in st.session_state['chat_history']:
-            if role == "YOU":
-                st.markdown(f"**{role} 👤**: {text} ")
-            elif role == "TEXT_BOT":
-                st.markdown(f"**{role} 🤖**: {text} ")
-    else:
-        st.error("Chat History is empty. Start asking questions to build the history.")
+    st.title("CHAT HISTORY")
+    
+    text_history_button, image_history_button, pdf_history_button = st.columns([1, 1, 1])
 
-# Define function to chat with the Gemini chatbot
+    with text_history_button:
+
+        if st.button("Show Text Chat History", use_container_width=True):
+            if 'chat_history' in st.session_state and st.session_state['chat_history']:
+                st.subheader("Text Chat History:")
+                for role, text in st.session_state['chat_history']:
+                    if role == "YOU":
+                        st.markdown(f"**{role} 👤**: {text} ")
+                    elif role == "TEXT_BOT":
+                        st.markdown(f"**{role} 🤖**: {text} ")
+            else:
+                st.error("Text Chat History is empty. Start asking questions to build the history.")
+
+    with image_history_button:
+        if st.button("Show Image Chat History", use_container_width=True):
+            for history_type, header_text, emoji in [
+                ('img_history', "Image Chat History:", "👤"),
+                ('img_srchistory', "Image Source", "👤"),
+            ]:
+                history = st.session_state.get(history_type, [])
+                error_message = f"{header_text} is empty. Start asking questions with images to build the history." if "Chat" in header_text else f"{header_text} is empty. Start uploading images to build the history."
+
+                if history:
+                    st.subheader(header_text)
+                    for role, text in history:
+                        role_prefix = emoji if role in ["YOU", "SOURCE"] else "🤖"
+                        st.markdown(f"**{role} {role_prefix}**: {text}")
+                else:
+                    st.error(error_message)
+
+    with pdf_history_button:
+        if st.button("Show PDF Chat History", use_container_width=True):
+            for history_type in ['pdf_history', 'pdf_srchistory']:
+                if history := st.session_state.get(history_type):
+                    title = "PDF Chat History:" if history_type == 'pdf_history' else "PDF Source History:"
+                    st.subheader(title)
+                    for role, user_text in history:
+                        role_prefix = "👤" if role in ["YOU", "PDFS UPLOADED"] else "🤖"
+                        st.markdown(f"**{role} {role_prefix}**:  {user_text} ")
+                else:
+                    st.error(f"{history_type.capitalize()} is empty. Start asking questions with PDFs to build the history.")
+
+    st.warning("THE CHAT HISTORY WILL BE LOST ONCE THE SESSION EXPIRES")
+
+# Function to chat with the Gemini chatbot
 def chat_with_gemini():
     input_text = st.text_input("Ask your Question")
     if input_text:
@@ -87,97 +174,44 @@ def chat_with_gemini():
         else:
             st.error("Error: Failed to retrieve response from the chat service.")
 
-# Define function to extract text from a PDF file
-
-# Define function to chat about a PDF
+# Function to chat with the Gemini chatbot using PDF content
 def chat_about_pdf(pdf_text):
-    input_text = st.text_input("Ask about the PDF")
-    if st.button("Send"):
-        if input_text:
-            response = get_gemini_response(input_text)
-            if response:
-                st.session_state['chat_history'].append(("YOU", input_text))
-                st.session_state['chat_history'].append(("TEXT_BOT", response.text))
+    input_text = st.text_input("Ask about the PDF content")
+    if input_text:
+        response = get_gemini_response(input_text)
+        if response:
+            st.session_state['pdf_history'].append(("YOU", input_text))
+            st.session_state['pdf_history'].append(("PDF_BOT", response.text))
+            st.write(response.text)
 
-# Define main function
+# Main function to run the app
 def main():
-    selected = option_menu(
-        menu_title=None,
-        options=["HOME", "Prompt Chat", "IMAGE CHAT", "PDF CHAT", "CHAT HISTORY"],
-        icons=['house', "pen", 'image', 'book', 'chat', 'person'],
-        default_index=0,
-        menu_icon='user',
-        orientation="horizontal",
-        styles="""
-        <style>
-            .option-menu {
-                width: 200px;
-                margin-right: 20px;
-            }
-        </style>
-    """
-    )
+    st.set_page_config(page_title="MyAI")
 
     if selected == "HOME":
-        # Display home page content
-        st.markdown("""# <span style='color:#0A2647'> Welcome to My Streamlit App  ** MyAI 🦅</span>""", unsafe_allow_html=True)
-        st.markdown("""#### <span style='color:#0E6363'> Based on Gemini-PRO, GEMINI-PRO-Vision LLM API FROM GOOGLE</span>""", unsafe_allow_html=True)
-        st.markdown("""## <span style='color:##11009E'>Introduction</span>""", unsafe_allow_html=True)
-        st.markdown(""" <span style='color:#020C0C'> MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases. </span>""", unsafe_allow_html=True)
+        st.markdown("# Welcome to My Streamlit App  ** MyAI 🦅**")
+        st.markdown("#### Based on Gemini-PRO,GEMINI-PRO-Vision LLM API FROM GOOGLE")
+        st.markdown("## Introduction")
+        st.markdown("MyAI is an innovative chatbot application designed to provide intelligent responses to your queries. Powered by advanced language and vision models, it offers a seamless conversational experience for various use cases.")
+
         st.markdown("""
-            ### <span style='color:#0F0F0F'>Instructions:</span>
-            <span style='color:#222831'>  📖 Navigate to Prompt CHAT for the Text based results..</span>
-            <br>
-            <span style='color:#222831'>  📸 Navigate to IMAGE CHAT for the IMAGE based results..</span>
-            <br>
-            <span style='color:#222831'>  📁 Navigate to PDF CHAT to chat with the PDF'S..</span>
-            <br>
-            <br>
-            <span style='color:#222831'> Explore the Possibilities:</span>
-            <br>
-            <span style='color:#222831'> ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs. 
-            </span>
-            <br>
-        """, unsafe_allow_html=True)
+        ### Instructions:
+        📖 Navigate to Prompt CHAT for the Text based results..
+        📸 Navigate to IMAGE CHAT for the IMAGE based results..
+        📁 Navigate to PDF CHAT to chat with the PDF'S..
+        
+        Explore the Possibilities:
+        
+        ParvazChatBot2 is a versatile tool that can assist you in various tasks, from answering questions to analyzing images and PDF documents. Explore its capabilities and discover new ways to leverage its intelligence for your needs.
+        """)
 
     elif selected == "Prompt Chat":
         chat_with_gemini()
 
-    elif selected == "IMAGE CHAT":
-        pass  # Placeholder for image chat functionality
-
-    elif selected == "PDF CHAT":
-        st.subheader("Upload PDF or Paste URL")
-        upload_file = st.file_uploader("Upload PDF File", type=['pdf'])
-        pdf_url = st.text_input("Paste PDF URL")
-
-        if upload_file:
-            pdf_docs = [upload_file]
-        elif pdf_url:
-            try:
-                response = requests.get(pdf_url)
-                if response.status_code == 200:
-                    pdf_bytes = BytesIO(response.content)
-                    pdf_docs = [pdf_bytes]
-                else:
-                    st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
-            except Exception as e:
-                st.error(f"Error loading PDF from URL: {str(e)}")
-                pdf_docs = []
-
-        if pdf_docs:
-            pdf_text = ""
-            for pdf in pdf_docs:
-                pdf_text += extract_text_from_pdf(pdf)
-
-            if pdf_text:
-                st.write(pdf_text)
-                chat_about_pdf(pdf_text)
-            else:
-                st.error("No text extracted from PDF.")
-
     elif selected == "CHAT HISTORY":
         display_chat_history()
+
+    st.warning("THE CHAT HISTORY WILL BE LOST ONCE THE SESSION EXPIRES")
 
 if __name__ == "__main__":
     main()
