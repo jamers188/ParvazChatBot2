@@ -1,18 +1,6 @@
 import streamlit as st
-import os
 from PyPDF2 import PdfReader
 import requests
-
-# Function to extract text from PDF documents
-def get_pdf_text(pdf_file):
-    text = ""
-    try:
-        pdf_reader = PdfReader(pdf_file)
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-    except Exception as e:
-        st.error(f"An error occurred while extracting text from PDF: {str(e)}")
-    return text
 
 # Function to extract text from PDF file at a URL
 def get_pdf_text_from_url(pdf_url):
@@ -21,7 +9,7 @@ def get_pdf_text_from_url(pdf_url):
         response.raise_for_status()  # Raise an exception for any errors
         with open("temp_pdf.pdf", "wb") as f:
             f.write(response.content)
-        return get_pdf_text("temp_pdf.pdf")
+        return "temp_pdf.pdf"
     except Exception as e:
         st.error(f"An error occurred while fetching or processing the PDF from URL: {str(e)}")
         return ""
@@ -37,35 +25,25 @@ def main():
 
         if uploaded_file:
             st.success("PDF file uploaded successfully!")
-            pdf_text = get_pdf_text(uploaded_file)
-            if pdf_text:
-                st.write("PDF Text:", pdf_text)
-                user_question = st.text_input("Ask a question")
-                if st.button("Chat"):
-                    if user_question:
-                        # Process the user's question and generate a response
-                        # Call your chat function here with pdf_text and user_question
-                        # response = chat_function(pdf_text, user_question)
-                        # st.write("Response:", response)
-                        st.write("Chat functionality will be implemented here.")
-                    else:
-                        st.warning("Please enter a question.")
-            else:
-                st.warning("Failed to extract text from PDF file.")
+            user_question = st.text_input("Ask a question")
+            if st.button("Chat"):
+                if user_question:
+                    # Process the user's question and generate a response
+                    # Call your chat function here with the PDF file and user_question
+                    st.write("Chat functionality will be implemented here.")
+                else:
+                    st.warning("Please enter a question.")
     elif option == "Provide PDF URL":
         pdf_url = st.text_input("Enter the URL of the PDF")
         if st.button("Chat with PDF from URL"):
             if pdf_url:
-                pdf_text = get_pdf_text_from_url(pdf_url)
-                if pdf_text:
-                    st.write("PDF Text:", pdf_text)
+                pdf_file = get_pdf_text_from_url(pdf_url)
+                if pdf_file:
                     user_question = st.text_input("Ask a question")
                     if st.button("Chat"):
                         if user_question:
                             # Process the user's question and generate a response
-                            # Call your chat function here with pdf_text and user_question
-                            # response = chat_function(pdf_text, user_question)
-                            # st.write("Response:", response)
+                            # Call your chat function here with the PDF file and user_question
                             st.write("Chat functionality will be implemented here.")
                         else:
                             st.warning("Please enter a question.")
