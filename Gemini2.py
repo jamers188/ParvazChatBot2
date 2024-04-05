@@ -379,7 +379,65 @@ if selected == "PDF CHAT":
         except Exception as e:
          st.error(f"An error occurred while processing the question: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
- #
-    def main1():
-     pass
+def fetch_text_from_url(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.text
+        else:
+            st.error(f"Failed to retrieve text from URL. Status code: {response.status_code}")
+    except Exception as e:
+        st.error(f"Error fetching text from URL: {str(e)}")
 
+# Function to extract text from PDF
+def extract_text_from_pdf(pdf_file):
+    text = ""
+    try:
+        pdf_reader = fitz.open(stream=pdf_file)
+        for page in pdf_reader:
+            text += page.get_text()
+    except Exception as e:
+        st.error(f"Error extracting text from PDF: {str(e)}")
+    return text
+
+# Function to get user input and chat with the chatbot
+def chat_with_bot():
+    user_input = st.text_input("Enter your message")
+    if user_input:
+        # Process user input and chat with the bot
+        # You can replace this part with your actual chatbot logic
+        st.write(f"You: {user_input}")  # Display user input
+        # Here you can send the user input to your chatbot and display its response
+        # Example:
+        # response = chatbot.send_message(user_input)
+        # st.write(f"Bot: {response}")
+
+# Main function
+def main():
+    st.title("Chat with URL or PDF")
+    st.write("Enter a URL or upload a PDF to chat with the bot.")
+
+    # Allow user to input a URL
+    url = st.text_input("Enter URL")
+    if st.button("Chat with URL"):
+        if url:
+            text = fetch_text_from_url(url)
+            if text:
+                st.write("Text fetched from URL:")
+                st.write(text)
+                # Chat with the bot using the fetched text
+                chat_with_bot()
+
+    # Allow user to upload a PDF
+    uploaded_file = st.file_uploader("Upload PDF", type=["pdf"])
+    if st.button("Chat with PDF"):
+        if uploaded_file:
+            # Chat with the bot using the PDF file
+            text = extract_text_from_pdf(uploaded_file)
+            st.write("Text extracted from PDF:")
+            st.write(text)
+            chat_with_bot()
+
+if __name__ == "__main__":
+    main()
+    
