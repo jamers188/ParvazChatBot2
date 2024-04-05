@@ -46,7 +46,8 @@ def main():
                 if pdf_file:
                     st.success("PDF loaded successfully!")
                     user_question = st.text_input("Ask a question")
-                    if st.button("Chat"):
+                    chat_button_clicked = st.button("Chat")
+                    if chat_button_clicked:
                         if user_question:
                             # Process the user's question and generate a response
                             # Call your chat function here with the PDF file and user_question
