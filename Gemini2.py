@@ -87,48 +87,29 @@ def get_pdf_text_from_url(pdf_url):
 def main1():
     st.header("Chat with PDF ")
 
-    user_question = st.text_input("Ask a Question from the PDF")
+    user_question = st.text_input("Ask a Question from the PDF", key="pdf_question_input")
 
     st.title("Menu:")
     st.sidebar.header("Options")
     option = st.sidebar.radio("Choose an Option", ("Upload PDF Files", "Provide PDF URL"))
 
     if option == "Upload PDF Files":
-        pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-        
-        if st.button("Submit & Process"):
-            with st.spinner("Processing..."):
-                pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
-                if not pdf_docs:
-                    st.error("Please upload PDF files only.")
-                    return
-
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done")
-                pdf_names = [pdf.name for pdf in pdf_docs]
-                st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-                st.balloons()
+        # Add code for uploading PDF files here
 
     elif option == "Provide PDF URL":
         pdf_url = st.text_input("Enter the URL of the PDF", key="pdf_url_input")
-        if st.button("Chat with PDF from URL", key="pdf_url_button"):
+        if st.button("Chat with PDF from URL", key="pdf_chat_button"):
             with st.spinner("Fetching PDF from URL..."):
                 pdf_text = get_pdf_text_from_url(pdf_url)
                 if pdf_text:
-                    user_question = st.text_input("Ask a Question from the PDF", key="pdf_question_input")
-                    if st.button("Ask", key="pdf_ask_button"):
-                        if user_question:
-                            # Add the user's question to the chat history
-                            st.session_state['pdf_history'].append(("YOU", user_question))
-    
-                            # Process the user's question and generate a response
-                            user_input(user_question, [pdf_text])
-                        else:
-                            st.warning("Please enter a question.")
+                    if user_question:
+                        # Process the user's question and generate a response
+                        user_input(user_question, [pdf_text])
+                    else:
+                        st.warning("Please enter a question.")
                 else:
                     st.error("Failed to fetch PDF from the provided URL.")
+
 
 # Main block to run the app
 if __name__ == "__main__":
