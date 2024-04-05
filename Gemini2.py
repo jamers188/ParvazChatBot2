@@ -297,7 +297,16 @@ if selected == "PDF CHAT":
                 st.error(f"Error processing PDF: {str(e)}")
         return text
 
-    # Rest of your PDF CHAT code...
+    st.subheader("Upload PDF or Paste URL")
+    upload_file = st.file_uploader("Upload PDF File", type=['pdf'])
+    pdf_url = st.text_input("Paste PDF URL")
+
+    pdf_docs = []
+    if upload_file:
+        pdf_docs.append(upload_file)
+    elif pdf_url:
+        pdf_docs.append(pdf_url)
+
 
 
 
