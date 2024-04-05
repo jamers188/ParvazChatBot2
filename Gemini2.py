@@ -27,6 +27,7 @@ def main():
             if uploaded_file:
                 st.success("PDF file uploaded successfully!")
                 user_question = st.text_input("Ask a question")
+                chat_button_clicked = st.form_submit_button("Chat")
 
         elif option == "Provide PDF URL":
             pdf_url = st.text_input("Enter the URL of the PDF")
@@ -38,8 +39,9 @@ def main():
                     if pdf_file:
                         st.success("PDF loaded successfully!")
                         user_question = st.text_input("Ask a question")
+                        chat_button_clicked = st.form_submit_button("Chat")
 
-        if st.form_submit_button("Chat"):
+        if chat_button_clicked:
             if user_question:
                 # Process the user's question and generate a response
                 # Call your chat function here with the PDF file and user_question
