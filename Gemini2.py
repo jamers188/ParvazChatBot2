@@ -329,57 +329,74 @@ if selected == "PDF CHAT":
 
         return chain
 
-    def main1():
-      # Main function for PDF chat functionality
-        st.header("Chat with PDF ")
+                        
+              
+          
 
-        user_question = st.chat_input("Ask a Question from the PDF Files")
+   def user_input(user_question):
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        try:
+            new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+            docs = new_db.similarity_search(user_question)
 
-        if user_question:
-            user_input(user_question)
-            #st.session_state['pdf_history'].append(("YOU", user_question))
+            chain = get_conversational_chain()
 
-        st.title("Menu:")
-        pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-        
-        if st.button("Submit & Process") :
+            response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+
+            print(response1)
+            st.write("Reply: ", response1["output_text"])
+            output_Text = response1["output_text"]
+            st.session_state["pdf_history"].append(("YOU", user_question))
+            st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
+        except Exception as e:
+            st.error(f"An error occurred while processing the question: {str(e)}")
+
+    # Main function for PDF chat functionality
+    st.header("Chat with PDF ")
+
+    user_question = st.chat_input("Ask a Question from the PDF Files")
+
+    if user_question:
+        user_input(user_question)
+
+    st.title("Menu:")
+    option = st.radio("Choose an option", ["Upload PDF Files", "Provide PDF URL"])
+
+    if option == "Upload PDF Files":
+        pdf_docs = st.file_uploader("Upload your PDF Files", accept_multiple_files=True)
+        if st.button("Submit & Process"):
             with st.spinner("Processing..."):
                 pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
                 if not pdf_docs:
                     st.error("Please upload PDF files only.")
                     return
-        raw_text = get_pdf_text(pdf_docs)
-        text_chunks = get_text_chunks(raw_text)
-        get_vector_store(text_chunks)
-        st.success("Done")
-        pdf_names = [pdf.name for pdf in pdf_docs]
-        st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-        st.balloons()
-
-                        
-              
-          
-
-    def user_input(user_question):
-       # Function to process user input and generate a response
-        embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-        try:
-         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-         docs = new_db.similarity_search(user_question)
-
-         chain = get_conversational_chain()
-
-        
-         response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
-
-
-         print(response1)
-         st.write("Reply: ", response1["output_text"])
-         output_Text = response1["output_text"]
-         st.session_state["pdf_history"].append(("YOU", user_question))
-         st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
-        except Exception as e:
-         st.error(f"An error occurred while processing the question: {str(e)}")
+                raw_text = get_pdf_text(pdf_docs)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks)
+                st.success("Done")
+                pdf_names = [pdf.name for pdf in pdf_docs]
+                st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+                st.balloons()
+    elif option == "Provide PDF URL":
+        pdf_url = st.text_input("Paste PDF URL Here (Paste PDF address):")
+        if pdf_url:
+            try:
+                response = requests.get(pdf_url)
+                if response.status_code == 200:
+                    pdf_file = BytesIO(response.content)
+                    pdf_reader = PdfReader(pdf_file)
+                    raw_text = ""
+                    for page in pdf_reader.pages:
+                        raw_text += page.extract_text()
+                    text_chunks = get_text_chunks(raw_text)
+                    get_vector_store(text_chunks)
+                    st.success("PDF Loaded Successfully")
+                    st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_url))
+                    st.balloons()
+                else:
+                    st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
+            except Exception as e:
+                st.error(f"Error loading PDF from URL: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
  #
     if __name__ == "__main__":
