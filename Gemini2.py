@@ -94,15 +94,12 @@ def process_pdf_upload(pdf_files):
             raw_text = get_pdf_text(pdf_files)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            try:
-                response = chat.send_message(raw_text, stream=True)
-                if response:
-                    st.session_state['pdf_history'].append(("PDF Uploaded", "Yes"))
-                    st.session_state['pdf_history'].append(("Bot", response.text))
-                    st.success("Response:")
-                    st.write(response.text)
-            except Exception as e:
-                st.error(f"Error processing PDF: {str(e)}")
+            response = model(raw_text)
+            if response:
+                st.session_state['pdf_history'].append(("PDF Uploaded", "Yes"))
+                st.session_state['pdf_history'].append(("Bot", response.text))
+                st.success("Response:")
+                st.write(response.text)
 
 # Function to process PDF URL input and generate a response
 def process_pdf_url(pdf_url):
@@ -116,15 +113,12 @@ def process_pdf_url(pdf_url):
                     raw_text = get_pdf_text([pdf_content])
                     st.success("PDF processed successfully.")
                     st.write("Chat with the PDF:")
-                    try:
-                        response = chat.send_message(raw_text, stream=True)
-                        if response:
-                            st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
-                            st.session_state['pdf_history'].append(("Bot", response.text))
-                            st.success("Response:")
-                            st.write(response.text)
-                    except Exception as e:
-                        st.error(f"Error processing PDF: {str(e)}")
+                    response = model(raw_text)
+                    if response:
+                        st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
+                        st.session_state['pdf_history'].append(("Bot", response.text))
+                        st.success("Response:")
+                        st.write(response.text)
                 else:
                     st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
             except Exception as e:
