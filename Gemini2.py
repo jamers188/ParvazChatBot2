@@ -20,6 +20,8 @@ def main():
     st.sidebar.title("Options")
     option = st.sidebar.radio("Choose an Option", ("Upload PDF File", "Provide PDF URL"))
 
+    chat_button_clicked = False
+
     with st.form(key="chat_form"):
         if option == "Upload PDF File":
             uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
@@ -27,7 +29,6 @@ def main():
             if uploaded_file:
                 st.success("PDF file uploaded successfully!")
                 user_question = st.text_input("Ask a question")
-                chat_button_clicked = st.form_submit_button("Chat")
 
         elif option == "Provide PDF URL":
             pdf_url = st.text_input("Enter the URL of the PDF")
@@ -39,16 +40,17 @@ def main():
                     if pdf_file:
                         st.success("PDF loaded successfully!")
                         user_question = st.text_input("Ask a question")
-                        chat_button_clicked = st.form_submit_button("Chat")
 
-        if chat_button_clicked:
-            if user_question:
-                # Process the user's question and generate a response
-                # Call your chat function here with the PDF file and user_question
-                st.write("You:", user_question)
-                st.write("Chat functionality will be implemented here.")
-            else:
-                st.warning("Please enter a question.")
+        chat_button_clicked = st.form_submit_button("Chat")
+
+    if chat_button_clicked:
+        if user_question:
+            # Process the user's question and generate a response
+            # Call your chat function here with the PDF file and user_question
+            st.write("You:", user_question)
+            st.write("Chat functionality will be implemented here.")
+        else:
+            st.warning("Please enter a question.")
 
 if __name__ == "__main__":
     main()
