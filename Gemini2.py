@@ -10,14 +10,11 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from google.generativeai.types import generation_types
 
-# Load environment variables from .env file if present
-# load_dotenv()
-
 # Initialize Streamlit app
 st.set_page_config(page_title="MyAI", page_icon='🤖')  # Page title
 
 # Initialize Gemini Pro model
-model = ChatGoogleGenerativeAI(model="gemini-pro")
+model = ChatGoogleGenerativeAI(model="openai-gpt")
 
 # Initialize session state for chat history and PDF history
 if 'chat_history' not in st.session_state:
