@@ -313,6 +313,7 @@ if selected == "PDF CHAT":
 
 
 
+
         pdf_text = get_pdf_text(pdf_docs)
         st.write(pdf_text)
 
