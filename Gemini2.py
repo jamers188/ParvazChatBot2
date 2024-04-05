@@ -1,5 +1,4 @@
 import streamlit as st
-from PyPDF2 import PdfReader
 import requests
 
 # Function to extract text from PDF file at a URL
@@ -29,8 +28,7 @@ def main():
 
             if uploaded_file:
                 st.success("PDF file uploaded successfully!")
-                user_question = st.text_input("Ask a question")
-
+                
         elif option == "Provide PDF URL":
             pdf_url = st.text_input("Enter the URL of the PDF")
             fetch_button_clicked = st.form_submit_button("Fetch PDF from URL")
@@ -40,7 +38,8 @@ def main():
                     pdf_file = get_pdf_text_from_url(pdf_url)
                     if pdf_file:
                         st.success("PDF loaded successfully!")
-                        user_question = st.text_input("Ask a question")
+
+        user_question = st.text_input("Ask a question")
 
         chat_button_clicked = st.form_submit_button("Chat")
 
