@@ -153,6 +153,7 @@ def main_pdf_chat():
             st.balloons()
 
 # Function to process user input and generate a response
+# Function to process user input and generate a response
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     try:
@@ -162,8 +163,12 @@ def user_input(user_question):
         response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
         st.write("Reply: ", response1["output_text"])
         output_Text = response1["output_text"]
-        st.session_state["pdf_history"].append(("YOU", user_question))
-        st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
+        
+        # Check if the entry already exists in pdf_history
+        if ("YOU", user_question) not in st.session_state["pdf_history"]:
+            st.session_state["pdf_history"].append(("YOU", user_question))
+        if ("PDF_BOT", output_Text) not in st.session_state["pdf_history"]:
+            st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
 
