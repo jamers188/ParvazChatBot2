@@ -291,15 +291,19 @@ if selected == "PDF CHAT":
     if pdf_docs:
         # Function to extract text from PDF documents using PyMuPDF
         def get_pdf_text(pdf_docs):
-            text = ""
-            for pdf in pdf_docs:
-                try:
-                    pdf_reader = fitz.open(pdf)
-                    for page in pdf_reader:
-                        text += page.get_text()
-                except Exception as e:
-                    st.error(f"Error processing PDF: {str(e)}")
-            return text
+    text = ""
+    for pdf in pdf_docs:
+        try:
+            if isinstance(pdf, str):  # Check if the input is a file path
+                pdf_reader = fitz.open(pdf)
+            else:
+                pdf_reader = fitz.open(stream=pdf)  # Open the PDF from BytesIO object
+            for page in pdf_reader:
+                text += page.get_text()
+        except Exception as e:
+            st.error(f"Error processing PDF: {str(e)}")
+    return text
+
 
         pdf_text = get_pdf_text(pdf_docs)
         st.write(pdf_text)
