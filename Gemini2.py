@@ -203,7 +203,7 @@ def main():
             else:
                 st.error("Error: Failed to retrieve response from the chat service.")
 
-    elif selected == "IMAGE CHAT":
+elif selected == "IMAGE CHAT":
     vision_model = genai.GenerativeModel('gemini-pro-vision')
     
     def vscontent(input_text_1, image):
