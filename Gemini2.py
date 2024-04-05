@@ -39,24 +39,27 @@ def get_conversational_chain():
     return chain
 
 # Function to process user input and generate a response
+# Function to process user input and generate a response
 def user_input(user_question, docs):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     try:
-        new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-        chain = get_conversational_chain()
+        if os.path.exists("faiss_index/index.faiss"):
+            new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+            chain = get_conversational_chain()
 
-        response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+            response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
 
-        output_text = response1["output_text"]
-        st.write("Reply: ", output_text)
-        st.session_state["pdf_history"].append(("YOU", user_question))
-        st.session_state["pdf_history"].append(("PDF_BOT", output_text))
-    except FileNotFoundError:
-        st.error("FAISS index file not found. Please ensure that the index file exists.")
+            output_text = response1["output_text"]
+            st.write("Reply: ", output_text)
+            st.session_state["pdf_history"].append(("YOU", user_question))
+            st.session_state["pdf_history"].append(("PDF_BOT", output_text))
+        else:
+            st.error("FAISS index file not found. Please create the index first.")
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
         # If an error occurs, ensure to display the user's question
         st.session_state["pdf_history"].append(("YOU", user_question))
+
 
 # Function to get PDF text from URL
 def get_pdf_text_from_url(pdf_url):
