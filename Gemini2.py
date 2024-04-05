@@ -350,9 +350,11 @@ def user_input(user_question):
             st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
         except Exception as e:
             st.error(f"An error occurred while processing the question: {str(e)}")
+         
+ 
 
-    # Main function for PDF chat functionality
-    st.header("Chat with PDF ")
+
+st.header("Chat with PDF ")
 
     user_question = st.chat_input("Ask a Question from the PDF Files")
 
