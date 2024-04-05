@@ -101,29 +101,14 @@ def main_pdf_chat():
     
     if option == "Upload PDF":
         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-    # Function to convert PDF content fetched from a URL into a BytesIO object
-def get_pdf_from_url(pdf_url):
-    try:
-        response = requests.get(pdf_url)
-        if response.status_code == 200:
-            pdf_doc = BytesIO(response.content)
-            return pdf_doc
-        else:
-            st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
-            return None
-    except Exception as e:
-        st.error(f"Error loading PDF from URL: {str(e)}")
-        return None
+    elif option == "Provide PDF URL":
+        pdf_url = st.text_input("Paste PDF URL Here:")
+        if pdf_url:
+            pdf_doc = get_pdf_from_url(pdf_url)
+            if pdf_doc:
+                pdf_docs = [pdf_doc]  # Create a list with the BytesIO object
+                st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
 
-elif option == "Provide PDF URL":
-pdf_url = st.text_input("Paste PDF URL Here:")
-if pdf_url:
-    pdf_doc = get_pdf_from_url(pdf_url)
-    if pdf_doc:
-        pdf_docs = [pdf_doc]  # Create a list with the BytesIO object
-        st.write("PDF Docs:", pdf_docs)  # Print out pdf_docs
-
-    
     if st.button("Submit & Process"):
         with st.spinner("Processing..."):
             if 'pdf_docs' not in locals():
@@ -136,7 +121,6 @@ if pdf_url:
             else:
                 st.error("No PDF files were uploaded.")
 
-
             if not pdf_docs:
                 st.error("Please upload PDF files only.")
                 return
@@ -148,6 +132,20 @@ if pdf_url:
             pdf_names = [pdf.name for pdf in pdf_docs]
             st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
             st.balloons()
+
+# Function to convert PDF content fetched from a URL into a BytesIO object
+def get_pdf_from_url(pdf_url):
+    try:
+        response = requests.get(pdf_url)
+        if response.status_code == 200:
+            pdf_doc = BytesIO(response.content)
+            return pdf_doc
+        else:
+            st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
+            return None
+    except Exception as e:
+        st.error(f"Error loading PDF from URL: {str(e)}")
+        return None
 
 # Function to process user input and generate a response
 def user_input(user_question):
