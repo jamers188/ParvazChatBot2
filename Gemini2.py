@@ -119,7 +119,12 @@ def main_pdf_chat():
                 st.error("Please upload PDF files or provide PDF URL.")
                 return
             
-            pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
+            # Check if pdf_docs is empty before trying to access attributes
+            if pdf_docs:
+                pdf_docs = [pdf for pdf in pdf_docs if getattr(pdf, 'name', '').endswith('.pdf')]
+            else:
+                st.error("No PDF files were uploaded.")
+
 
             if not pdf_docs:
                 st.error("Please upload PDF files only.")
