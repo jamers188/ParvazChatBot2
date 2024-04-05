@@ -36,13 +36,14 @@ def process_pdf_url(pdf_url):
         # Download PDF from URL
         response = requests.get(pdf_url)
         if response.status_code == 200:
-            pdf_content = BytesIO(response.content)  # Wrap bytes in BytesIO object
+            pdf_content = BytesIO(response.content)
             raw_text = get_pdf_text(pdf_content)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
             # Chat with the PDF using GenerativeAI
             model = genai.GenerativeModel("gemini-pro")
-            response = model(raw_text)
+            chat = model.start_chat(history=[raw_text])
+            response = chat.generate_text()
             if response:
                 st.success("Response:")
                 st.write(response)
@@ -51,7 +52,7 @@ def process_pdf_url(pdf_url):
     except Exception as e:
         st.error(f"Error processing PDF from URL: {str(e)}")
 
-# Function to get PDF text
+# Function to extract text from PDF content
 def get_pdf_text(pdf_content):
     raw_text = ""
     pdf_reader = PdfReader(pdf_content)
