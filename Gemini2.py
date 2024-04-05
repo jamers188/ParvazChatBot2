@@ -93,8 +93,7 @@ def process_pdf_upload(pdf_files):
             # Process uploaded PDFs
             raw_text = get_pdf_text(pdf_files)
             st.success("PDF processed successfully.")
-            st.write("Extracted Text:")
-            st.write(raw_text)
+            st.write("Chat with the PDF:")
             response = model(raw_text)
             if response:
                 st.session_state['pdf_history'].append(("PDF Uploaded", "Yes"))
@@ -113,8 +112,7 @@ def process_pdf_url(pdf_url):
                     pdf_content = BytesIO(response.content)
                     raw_text = get_pdf_text([pdf_content])
                     st.success("PDF processed successfully.")
-                    st.write("Extracted Text:")
-                    st.write(raw_text)
+                    st.write("Chat with the PDF:")
                     response = model(raw_text)
                     if response:
                         st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
