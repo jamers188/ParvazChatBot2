@@ -27,32 +27,36 @@ def main():
             st.success("PDF file uploaded successfully!")
             user_question = st.text_input("Ask a question")
 
-            with st.form(key="chat_form"):
-                chat_button_clicked = st.form_submit_button("Chat")
-                if chat_button_clicked and user_question:
+            if st.button("Chat"):
+                if user_question:
                     # Process the user's question and generate a response
                     # Call your chat function here with the PDF file and user_question
                     st.write("You:", user_question)
                     st.write("Chat functionality will be implemented here.")
+                else:
+                    st.warning("Please enter a question.")
 
     elif option == "Provide PDF URL":
         pdf_url = st.text_input("Enter the URL of the PDF")
+        fetch_button_clicked = st.button("Fetch PDF from URL")
 
-        with st.form(key="pdf_form"):
-            fetch_button_clicked = st.form_submit_button("Fetch PDF from URL")
-            if fetch_button_clicked and pdf_url:
+        if fetch_button_clicked:
+            if pdf_url:
                 pdf_file = get_pdf_text_from_url(pdf_url)
                 if pdf_file:
                     st.success("PDF loaded successfully!")
                     user_question = st.text_input("Ask a question")
 
-                    with st.form(key="chat_form"):
-                        chat_button_clicked = st.form_submit_button("Chat")
-                        if chat_button_clicked and user_question:
+                    if st.button("Chat"):
+                        if user_question:
                             # Process the user's question and generate a response
                             # Call your chat function here with the PDF file and user_question
                             st.write("You:", user_question)
                             st.write("Chat functionality will be implemented here.")
+                        else:
+                            st.warning("Please enter a question.")
+                else:
+                    st.warning("Failed to fetch PDF from the provided URL.")
 
 if __name__ == "__main__":
     main()
