@@ -29,7 +29,7 @@ def process_pdf_url(pdf_url, chat):
             raw_text = get_pdf_text(pdf_content)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            response = chat(raw_text)
+            response = chat.query(raw_text)
             if response:
                 st.session_state['pdf_srchistory'].append(("PDF URL", pdf_url))
                 st.session_state['pdf_history'].append(("Bot", response.text))
@@ -89,7 +89,7 @@ def process_pdf_upload(pdf_file, chat):
             raw_text = get_pdf_text(pdf_file)
             st.success("PDF processed successfully.")
             st.write("Chat with the PDF:")
-            response = chat(raw_text)
+            response = chat.query(raw_text)
             if response:
                 st.session_state['pdf_history'].append(("Bot", response.text))
                 st.success("Response:")
