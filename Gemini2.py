@@ -328,12 +328,12 @@ if selected == "PDF CHAT":
         chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 
         return chain
+     
+ 
 
-                        
-              
-          
 
-   def user_input(user_question):
+
+def user_input(user_question):
         embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         try:
             new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
