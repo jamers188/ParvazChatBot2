@@ -395,6 +395,5 @@ elif option == "Provide PDF URL":
     st.error(f"Failed to retrieve PDF from URL. Status code: {response.status_code}")
   except Exception as e:
    st.error(f"Error loading PDF from URL: {str(e)}")
-     #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
-    if __name__ == "__main__":
-        main1()
+   if __name__ == "__main__":
+    main1()
