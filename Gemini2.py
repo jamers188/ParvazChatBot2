@@ -367,5 +367,6 @@ if selected == "PDF CHAT":
          st.error(f"An error occurred while processing the question: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
  #
-    if __name__ == "__main__":
-        main1()
+    def main1():
+     pass
+
