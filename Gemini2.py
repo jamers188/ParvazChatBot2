@@ -16,7 +16,8 @@ genai.configure(api_key=API_KEY)
 # Function to load Gemini Pro model and start chat
 def load_model():
     model = genai.GenerativeModel("gemini-pro")
-    return model.start_chat(history=[])
+    chat = model.start_chat(history=[])
+    return chat
 
 # Function to process PDF URL input and generate a response
 def process_pdf_url(pdf_url):
