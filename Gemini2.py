@@ -51,6 +51,8 @@ def user_input(user_question, docs):
         st.write("Reply: ", output_text)
         st.session_state["pdf_history"].append(("YOU", user_question))
         st.session_state["pdf_history"].append(("PDF_BOT", output_text))
+    except FileNotFoundError:
+        st.error("FAISS index file not found. Please ensure that the index file exists.")
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
         # If an error occurs, ensure to display the user's question
