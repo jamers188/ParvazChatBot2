@@ -60,7 +60,8 @@ if 'pdf_srchistory' not in st.session_state:
     st.session_state['pdf_srchistory'] = []
 
 # Initialize streamlit app
-st.set_page_config(page_title="MyAI", page_icon='🤖')
+st.set_page_config(page_title="MyAI", page_icon="🤖")
+
 
 # Initialize session state for chat history, image history, PDF history, etc.
 if 'chat_history' not in st.session_state:
