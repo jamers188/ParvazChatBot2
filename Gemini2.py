@@ -326,9 +326,7 @@ if selected == "HOME":
      </span>
     <br>
 """, unsafe_allow_html=True)
- # Function to get responses from the Gemini chatbot
-    else:
-        main(selected)
+
 
 if __name__ == "__main__":
     main()
