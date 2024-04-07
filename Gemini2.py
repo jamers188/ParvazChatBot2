@@ -4,19 +4,13 @@ from PyPDF2 import PdfReader
 from io import BytesIO
 import requests
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from google.generativeai.types import generation_types
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-
-def get_text_chunks(text):
-    # Function to split text into smaller chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
-    chunks = text_splitter.split_text(text)
-    return chunks
 # Function to extract text from PDF documents
 def get_pdf_text(pdf_docs):
     text = ""
@@ -55,6 +49,21 @@ def fetch_pdf_content(url):
     except Exception as e:
         st.error(f"Error fetching PDF content from URL: {str(e)}")
         return None
+
+# Function to split text into smaller chunks
+def get_text_chunks(text):
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+    chunks = text_splitter.split_text(text)
+    return chunks
+
+# Function to create vector store from text chunks
+def get_vector_store(text_chunks):
+    try:
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+        vector_store.save_local("faiss_index")
+    except Exception as e:
+        st.error(f"Error creating vector store: {str(e)}")
 
 # Main function for PDF chat functionality
 def main1():
@@ -97,13 +106,6 @@ def user_input(user_question):
         st.session_state["pdf_history"].append(("PDF_BOT", response1["output_text"]))
     except Exception as e:
         st.error(f"An error occurred while processing the question: {str(e)}")
-
-# Function to process PDF content
-def process_pdf_content(raw_text):
-    text_chunks = get_text_chunks(raw_text)
-    get_vector_store(text_chunks)
-    st.success("Done")
-    st.balloons()
 
 # Initialize session state for PDF chat history
 if 'pdf_history' not in st.session_state:
