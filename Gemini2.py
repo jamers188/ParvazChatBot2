@@ -113,9 +113,13 @@ def process_pdf_content(vector_store):
 # Function to process user input and generate a response
 def user_input(user_question):
     try:
-        # Ensure new_db is accessible here by defining it as a global variable
-        global new_db
-        docs = new_db.similarity_search(user_question)
+        # Load or define new_db if not already loaded
+        if 'new_db' not in st.session_state:
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+            st.session_state['new_db'] = new_db
+        
+        docs = st.session_state['new_db'].similarity_search(user_question)
         chain = get_conversational_chain()
         response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
         st.write("Reply: ", response1["output_text"])
