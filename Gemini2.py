@@ -398,25 +398,24 @@ if selected == "PDF CHAT":
 
     def user_input(user_question):
        # Function to process user input and generate a response
-        try:
-            if 'new_db' not in st.session_state:
-                embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-                new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-                docs = new_db.similarity_search(user_question)
-                st.session_state['new_db'] = new_db
-                chain = get_conversational_chain()
-
-        
-            response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
-   
-   
-            print(response1)
-            st.write("Reply: ", response1["output_text"])
-            output_Text = response1["output_text"]
-            st.session_state["pdf_history"].append(("YOU", user_question))
-            st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
+        embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+         try:
+          new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+          docs = new_db.similarity_search(user_question)
+ 
+          chain = get_conversational_chain()
+ 
+         
+          response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
+ 
+ 
+          print(response1)
+          st.write("Reply: ", response1["output_text"])
+          output_Text = response1["output_text"]
+          st.session_state["pdf_history"].append(("YOU", user_question))
+          st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
         except Exception as e:
-            st.error(f"An error occurred while processing the question: {str(e)}")
+         st.error(f"An error occurred while processing the question: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
  #
     if __name__ == "__main__":
