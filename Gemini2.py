@@ -399,7 +399,7 @@ if selected == "PDF CHAT":
     def user_input(user_question):
        # Function to process user input and generate a response
         embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-         try:
+        try:
           new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
           docs = new_db.similarity_search(user_question)
  
