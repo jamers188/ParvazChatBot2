@@ -86,14 +86,23 @@ def main1():
                     st.error("Please upload PDF files only.")
                     return
                 raw_text = get_pdf_text(pdf_docs)
-                process_pdf_content(raw_text)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks)
+                process_pdf_content(text_chunks)
 
     elif option == "Paste PDF URL":
         pdf_url = st.text_input("Paste PDF URL here:")
         if pdf_url:
             raw_text = fetch_pdf_content(pdf_url)
             if raw_text:
-                process_pdf_content(raw_text)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks)
+                process_pdf_content(text_chunks)
+
+# Function to process PDF content
+def process_pdf_content(text_chunks):
+    st.success("Done")
+    st.balloons()
 
 # Function to process user input and generate a response
 def user_input(user_question):
