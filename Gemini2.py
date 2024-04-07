@@ -364,18 +364,18 @@ if selected == "PDF CHAT":
             pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
         
             if st.button("Submit & Process") :
-            with st.spinner("Processing..."):
-                pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
-                if not pdf_docs:
-                    st.error("Please upload PDF files only.")
-                    return
-        raw_text = get_pdf_text(pdf_docs)
-        text_chunks = get_text_chunks(raw_text)
-        get_vector_store(text_chunks)
-        st.success("Done")
-        pdf_names = [pdf.name for pdf in pdf_docs]
-        st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-        st.balloons()
+               with st.spinner("Processing..."):
+                   pdf_docs = [pdf for pdf in pdf_docs if pdf.name.endswith('.pdf')]
+                   if not pdf_docs:
+                       st.error("Please upload PDF files only.")
+                       return
+           raw_text = get_pdf_text(pdf_docs)
+           text_chunks = get_text_chunks(raw_text)
+           get_vector_store(text_chunks)
+           st.success("Done")
+           pdf_names = [pdf.name for pdf in pdf_docs]
+           st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+           st.balloons()
 
         elif option == "Paste PDF URL":
             pdf_url = st.text_input("Paste PDF URL here:")
