@@ -407,16 +407,16 @@ if selected == "PDF CHAT":
                 chain = get_conversational_chain()
 
         
-         response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
-
-
-         print(response1)
-         st.write("Reply: ", response1["output_text"])
-         output_Text = response1["output_text"]
-         st.session_state["pdf_history"].append(("YOU", user_question))
-         st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
+            response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
+   
+   
+            print(response1)
+            st.write("Reply: ", response1["output_text"])
+            output_Text = response1["output_text"]
+            st.session_state["pdf_history"].append(("YOU", user_question))
+            st.session_state["pdf_history"].append(("PDF_BOT", output_Text))
         except Exception as e:
-         st.error(f"An error occurred while processing the question: {str(e)}")
+            st.error(f"An error occurred while processing the question: {str(e)}")
      #block will only execute if the script is run directly by the Python interpreter, not if it's imported as a module into another script.
  #
     if __name__ == "__main__":
