@@ -369,13 +369,13 @@ if selected == "PDF CHAT":
                    if not pdf_docs:
                        st.error("Please upload PDF files only.")
                        return
-           raw_text = get_pdf_text(pdf_docs)
-           text_chunks = get_text_chunks(raw_text)
-           get_vector_store(text_chunks)
-           st.success("Done")
-           pdf_names = [pdf.name for pdf in pdf_docs]
-           st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
-           st.balloons()
+                   raw_text = get_pdf_text(pdf_docs)
+                   text_chunks = get_text_chunks(raw_text)
+                   get_vector_store(text_chunks)
+                   st.success("Done")
+                   pdf_names = [pdf.name for pdf in pdf_docs]
+                   st.session_state["pdf_srchistory"].append(("PDFS UPLOADED", pdf_names))
+                   st.balloons()
 
         elif option == "Paste PDF URL":
             pdf_url = st.text_input("Paste PDF URL here:")
