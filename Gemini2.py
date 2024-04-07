@@ -398,12 +398,13 @@ if selected == "PDF CHAT":
 
     def user_input(user_question):
        # Function to process user input and generate a response
-        embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
         try:
-         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-         docs = new_db.similarity_search(user_question)
-         st.session_state['new_db'] = new_db
-         chain = get_conversational_chain()
+            if 'new_db' not in st.session_state:
+                embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+                new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+                docs = new_db.similarity_search(user_question)
+                st.session_state['new_db'] = new_db
+                chain = get_conversational_chain()
 
         
          response1 = chain( {"input_documents":docs, "question": user_question} , return_only_outputs=True)
