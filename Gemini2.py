@@ -62,8 +62,10 @@ def get_vector_store(text_chunks):
         embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
         vector_store.save_local("faiss_index")
+        return vector_store  # Return the created vector store
     except Exception as e:
         st.error(f"Error creating vector store: {str(e)}")
+        return None
 
 # Main function for PDF chat functionality
 def main1():
@@ -87,8 +89,8 @@ def main1():
                     return
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                process_pdf_content(text_chunks)
+                vector_store = get_vector_store(text_chunks)
+                process_pdf_content(vector_store)  # Pass the vector store to the process_pdf_content function
 
     elif option == "Paste PDF URL":
         pdf_url = st.text_input("Paste PDF URL here:")
@@ -96,17 +98,23 @@ def main1():
             raw_text = fetch_pdf_content(pdf_url)
             if raw_text:
                 text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                process_pdf_content(text_chunks)
+                vector_store = get_vector_store(text_chunks)
+                process_pdf_content(vector_store)  # Pass the vector store to the process_pdf_content function
 
 # Function to process PDF content
-def process_pdf_content(text_chunks):
-    st.success("Done")
-    st.balloons()
+def process_pdf_content(vector_store):
+    if vector_store:
+        st.success("Done")
+        st.balloons()
+        # Here you can use the vector store for further processing
+    else:
+        st.error("Failed to process PDF content")
 
 # Function to process user input and generate a response
 def user_input(user_question):
     try:
+        # Ensure new_db is accessible here by defining it as a global variable
+        global new_db
         docs = new_db.similarity_search(user_question)
         chain = get_conversational_chain()
         response1 = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
