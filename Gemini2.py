@@ -384,7 +384,15 @@ if selected == "PDF CHAT":
                 if raw_text:
                     text_chunks = get_text_chunks(raw_text)
                     vector_store = get_vector_store(text_chunks)
-                    process_pdf_content(vector_store) 
+                    process_pdf_content(vector_store)
+
+    def process_pdf_content(vector_store):
+        if vector_store:
+            st.success("Done")
+            st.balloons()
+            # Here you can use the vector store for further processing
+        else:
+            st.error("Failed to process PDF content")
               
           
 
